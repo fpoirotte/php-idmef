@@ -1,0 +1,38 @@
+{
+    "prefer-stable": true,
+    "name": "fpoirotte/idmef",
+    "description": "IDMEF library for PHP",
+    "keywords": ["security", "IDMEF", "intrustion", "detection", "Prelude", "SIEM"],
+    "homepage": "https://github.com/fpoirotte/IDMEF",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "François Poirotte",
+            "email": "clicky@erebot.net",
+            "role": "lead"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/fpoirotte/IDMEF/issues",
+        "irc": "irc://irc.iiens.net/Clicky",
+        "source": "https://github.com/fpoirotte/IDMEF"
+    },
+    "require": {
+        "php": ">=5.4",
+        "ext-Reflection": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "*",
+        "squizlabs/php_codesniffer": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "fpoirotte\\IDMEF\\": "src/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-develop": "1.0.x-dev"
+        }
+    }
+}
