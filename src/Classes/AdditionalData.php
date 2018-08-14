@@ -60,4 +60,3 @@ class AdditionalData extends AbstractClass
         }
     }
 }
-

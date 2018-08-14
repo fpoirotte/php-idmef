@@ -18,4 +18,3 @@ class SNMPService extends Service
         'command'                   => StringType::class,
     );
 }
-

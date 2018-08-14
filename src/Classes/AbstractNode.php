@@ -20,7 +20,7 @@ abstract class AbstractNode implements \IteratorAggregate
         throw new \InvalidArgumentException($prop);
     }
 
-    public function validate()
+    public function isValid()
     {
         throw new \RuntimeException();
     }
@@ -53,16 +53,6 @@ abstract class AbstractNode implements \IteratorAggregate
             $children[$k] = $child;
         }
         $this->_children = $children;
-    }
-
-    public function serialize()
-    {
-        return '';
-    }
-
-    public function unserialize($serialized)
-    {
-        return new static;
     }
 
     public function getIterator($path = null, $value = null)
@@ -122,8 +112,7 @@ abstract class AbstractNode implements \IteratorAggregate
             yield $this;
         }
 
-        foreach ($this->_children as $child)
-        {
+        foreach ($this->_children as $child) {
             foreach ($child->getIterator($path, $value) as $subpath => $subnode) {
                 yield $subpath => $subnode;
             }

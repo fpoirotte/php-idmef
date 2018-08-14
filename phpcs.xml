@@ -3,7 +3,16 @@
     <description>Coding standard for IDMEF.</description>
     <file>src/</file>
     <arg value="vp"/>
-    <rule ref="PSR2"/>
+    <rule ref="PSR2">
+        <!--
+            The code relies heavily on magic methods and as a convention:
+            - Intrinsic methods are either prefixed or use unambiguous names
+            - Intrinsic properties are prefixed with an underscore
+            - Dynamic properties are never prefixed
+        -->
+        <exclude name="PSR2.Methods.MethodDeclaration.Underscore"/>
+        <exclude name="PSR2.Classes.PropertyDeclaration.Underscore"/>
+    </rule>
     <encoding>utf-8</encoding>
 </ruleset>
 

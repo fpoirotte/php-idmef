@@ -93,4 +93,3 @@ abstract class AbstractList extends AbstractNode implements \ArrayAccess, \Itera
         return ($this->_parent === null) ? null : $this->_parent->getPath($this);
     }
 }
-

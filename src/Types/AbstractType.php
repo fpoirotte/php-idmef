@@ -28,4 +28,3 @@ abstract class AbstractType extends AbstractNode
         return $this->_parent->getPath($this) . '.' . $this->_parent->__get($this);
     }
 }
-
