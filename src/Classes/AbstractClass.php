@@ -58,13 +58,14 @@ abstract class AbstractClass extends AbstractNode
         $type = $this->_my_subclasses[$prop];
         if (is_a($type, AbstractClass::class, true) ||
             is_a($type, AbstractList::class, true)) {
-            if ($this->_locked) {
-                throw new \LockException();
+            $this->acquireLock(self::LOCK_EXCLUSIVE);
+            try {
+                $child = new $type();
+                $this->_children[$prop] = $child;
+                $child->_parent = $this;
+            } finally {
+                $this->releaseLock(self::LOCK_EXCLUSIVE);
             }
-
-            $child = new $type();
-            $this->_children[$prop] = $child;
-            $child->_parent = $this;
             return $child;
         }
         return null;
@@ -72,10 +73,6 @@ abstract class AbstractClass extends AbstractNode
 
     public function __set($prop, $value)
     {
-        if ($this->_locked) {
-            throw new \LockException();
-        }
-
         $prop = $this->_normalizeProperty($prop);
         $type = $this->_my_subclasses[$prop];
 
@@ -91,9 +88,14 @@ abstract class AbstractClass extends AbstractNode
             throw new \InvalidArgumentException($value);
         }
 
-        $value = clone $value;
-        $value->_parent = $this;
-        $this->_children[$prop] = $value;
+        $this->acquireLock(self::LOCK_EXCLUSIVE);
+        try {
+            $value = clone $value;
+            $value->_parent = $this;
+            $this->_children[$prop] = $value;
+        } finally {
+            $this->releaseLock(self::LOCK_EXCLUSIVE);
+        }
     }
 
     public function __isset($prop)
@@ -104,11 +106,12 @@ abstract class AbstractClass extends AbstractNode
 
     public function __unset($prop)
     {
-        if ($this->_locked) {
-            throw new \LockException();
-        }
-
         $prop = $this->_normalizeProperty($prop);
-        unset($this->_children[$prop]);
+        $this->acquireLock(self::LOCK_EXCLUSIVE);
+        try {
+            unset($this->_children[$prop]);
+        } finally {
+            $this->releaseLock(self::LOCK_EXCLUSIVE);
+        }
     }
 }

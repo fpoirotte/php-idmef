@@ -13,8 +13,10 @@ abstract class AbstractNode implements \IteratorAggregate
     protected static $_subclasses = array();
     protected $_parent = null;
     protected $_children = array();
-    protected $_lock = null;
-    protected $_locked = false;
+    protected $_locks = array(0, 0);
+
+    const LOCK_EXCLUSIVE = 0;
+    const LOCK_SHARED = 1;
 
     public function __get($prop)
     {
@@ -45,47 +47,60 @@ abstract class AbstractNode implements \IteratorAggregate
         }
     }
 
-    public function acquireLock($code)
+    public function acquireLock($mode = self::LOCK_EXCLUSIVE, $recursive = false)
     {
-        if ($this->isLocked()) {
-            throw new \LockException();
+        if (!in_array($mode, array(self::LOCK_EXCLUSIVE, self::LOCK_SHARED))) {
+            throw new \InvalidArgumentException($mode);
+        }
+
+        if ($mode === self::LOCK_EXCLUSIVE && $this->isLocked()) {
+            throw new LockException();
         }
 
         $locked = array();
         try {
-            foreach ($this->_children as $child) {
-                $child->acquireLock($code);
-                $locked[] = $child;
+            if ($recursive) {
+                foreach ($this->_children as $child) {
+                    $child->acquireLock($mode, $recursive);
+                    $locked[] = $child;
+                }
             }
         } catch (\Exception $e) {
             foreach ($locked as $child) {
-                $child->releaseLock($code);
+                $child->releaseLock($mode, $recursive);
             }
             throw $e;
         }
-        $this->_lock = $code;
-        $this->_locked = true;
+
+        $this->_locks[$mode]++;
+        echo "acquire $mode" . PHP_EOL;
     }
 
-    public function releaseLock($code)
+    public function releaseLock($mode = self::LOCK_EXCLUSIVE, $recursive = false)
     {
-        if (!$this->isLocked()) {
-            throw new \LockException();
+        if (!in_array($mode, array(self::LOCK_EXCLUSIVE, self::LOCK_SHARED))) {
+            throw new \InvalidArgumentException($mode);
         }
 
-        if ($code !== $this->_lock) {
-            throw new \InvalidArgumentException($code);
+        if (!$this->isLocked($mode)) {
+            throw new LockException();
         }
-        foreach ($this->_children as $child) {
-            $child->releaseLock($code);
+
+        if ($recursive) {
+            foreach ($this->_children as $child) {
+                $child->releaseLock($mode, $recursive);
+            }
         }
-        $this->_locked = false;
-        $this->_lock = null;
+
+        $this->_locks[$mode]--;
+        echo "release $mode" . PHP_EOL;
     }
 
-    public function isLocked()
+    public function isLocked($mode = null)
     {
-        return $this->_locked;
+        $locks = (isset($this->_locks[$mode]) ? $this->_locks[$mode] : array_sum($this->_locks));
+        echo "isLocked: $mode => $locks" . PHP_EOL;
+        return $locks > 0;
     }
 
     public function getParent()
@@ -121,8 +136,7 @@ abstract class AbstractNode implements \IteratorAggregate
         }
         $this->_children = $children;
         $this->_parent = null;
-        $this->_lock = null;
-        $this->_locked = false;
+        $this->_locks = array(0, 0);
     }
 
     public function getIterator($path = null, $value = null, $minDepth = 0, $maxDepth = -1)

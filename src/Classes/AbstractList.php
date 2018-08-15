@@ -33,17 +33,18 @@ abstract class AbstractList extends AbstractNode implements \ArrayAccess, \Itera
 
         $offset = $this->_validateOffset($offset);
         if (!isset($this->_children[$offset])) {
-            if ($this->_locked) {
-                throw new \LockException();
-            }
-
-            $cls = $this->_type;
-            $child = new $cls;
-            $child->_parent = $this;
-            if ($offset === null) {
-                $this->_children[] = $child;
-            } else {
-                $this->_children[$offset] = $child;
+            $this->acquireLock(self::LOCK_EXCLUSIVE);
+            try {
+                $cls = $this->_type;
+                $child = new $cls;
+                $child->_parent = $this;
+                if ($offset === null) {
+                    $this->_children[] = $child;
+                } else {
+                    $this->_children[$offset] = $child;
+                }
+            } finally {
+                $this->releaseLock(self::LOCK_EXCLUSIVE);
             }
             return $child;
         }
@@ -52,32 +53,34 @@ abstract class AbstractList extends AbstractNode implements \ArrayAccess, \Itera
 
     public function offsetSet($offset, $value)
     {
-        if ($this->_locked) {
-            throw new \LockException();
-        }
-
         $offset = $this->_validateOffset($offset);
         if (!($value instanceof $this->_type)) {
             throw new \InvalidArgumentException($value);
         }
 
-        $value = clone $value;
-        $value->_parent = $this;
-        if ($offset === null) {
-            $this->_children[] = $value;
-        } else {
-            $this->_children[$offset] = $value;
+        $this->acquireLock(self::LOCK_EXCLUSIVE);
+        try {
+            $value = clone $value;
+            $value->_parent = $this;
+            if ($offset === null) {
+                $this->_children[] = $value;
+            } else {
+                $this->_children[$offset] = $value;
+            }
+        } finally {
+            $this->releaseLock(self::LOCK_EXCLUSIVE);
         }
     }
 
     public function offsetUnset($offset)
     {
-        if ($this->_locked) {
-            throw new \LockException();
+        $this->acquireLock(self::LOCK_EXCLUSIVE);
+        try {
+            unset($this->_children[$offset]);
+            $this->_children = array_values($this->_children);
+        } finally {
+            $this->releaseLock(self::LOCK_EXCLUSIVE);
         }
-
-        unset($this->_children[$offset]);
-        $this->_children = array_values($this->_children);
     }
 
     protected function _validateOffset($offset)
