@@ -73,7 +73,6 @@ abstract class AbstractNode implements \IteratorAggregate
         }
 
         $this->_locks[$mode]++;
-        echo "acquire $mode" . PHP_EOL;
     }
 
     public function releaseLock($mode = self::LOCK_EXCLUSIVE, $recursive = false)
@@ -93,13 +92,11 @@ abstract class AbstractNode implements \IteratorAggregate
         }
 
         $this->_locks[$mode]--;
-        echo "release $mode" . PHP_EOL;
     }
 
     public function isLocked($mode = null)
     {
         $locks = (isset($this->_locks[$mode]) ? $this->_locks[$mode] : array_sum($this->_locks));
-        echo "isLocked: $mode => $locks" . PHP_EOL;
         return $locks > 0;
     }
 
