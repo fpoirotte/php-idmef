@@ -333,7 +333,7 @@ class Xml extends AbstractSerializer
     protected function visitNtpStampType($node)
     {
         $this->out->startElement($node->getParent()->__get($node));
-        $this->out->writeAttribute('ntpstamp', $node);
+        $this->out->writeAttribute($node, 'ntpstamp');
     }
 
     protected function visitConfidence($node)
@@ -359,6 +359,10 @@ class Xml extends AbstractSerializer
 
     protected function departAlert($node)
     {
+        // This is done here so that classes that inherit from Alert
+        // (namely OverflowAlert, ToolAlert, CorrelationAlert) can
+        // add their own attributes before the additional data.
+        // See the DTD in section 8 of RFC 4765 for more information.
         foreach ($node->AdditionalData as $child) {
             $this->visitAdditionalData($child);
         }
