@@ -58,12 +58,13 @@ abstract class AbstractNode implements \IteratorAggregate
         $this->_children = $children;
     }
 
-    public function getIterator($path = null, $value = null)
+    public function getIterator($path = null, $value = null, $minDepth = 0, $maxDepth = -1)
     {
         $matchesPath = true;
         $matchesValue = ($value === null) || (($this instanceof AbstractType) && $this->getValue() === $value);
+        $matchesDepth = ($minDepth <= 0);
 
-        if ($path !== null) {
+        if ($path !== null && $matchesDepth) {
             $pathParts  = explode('.', $path);
             $thisParts  = explode('.', $this->getPath());
             $pathLen    = count($pathParts);
@@ -111,12 +112,21 @@ abstract class AbstractNode implements \IteratorAggregate
             }
         }
 
-        if ($matchesPath && $matchesValue) {
+        if ($matchesPath && $matchesValue && $matchesDepth) {
             yield $this;
         }
 
+        if ($minDepth > 0) {
+            $minDepth--;
+        }
+        if (!$maxDepth) {
+            return;
+        } else {
+            $maxDepth = max(-1, $maxDepth - 1);
+        }
+
         foreach ($this->_children as $child) {
-            foreach ($child->getIterator($path, $value) as $subpath => $subnode) {
+            foreach ($child->getIterator($path, $value, $minDepth, $maxDepth) as $subpath => $subnode) {
                 yield $subpath => $subnode;
             }
         }

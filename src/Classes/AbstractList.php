@@ -82,10 +82,10 @@ abstract class AbstractList extends AbstractNode implements \ArrayAccess, \Itera
         return ($offset + $len) % $len;
     }
 
-    public function getIterator($path = null, $value = null)
+    public function getIterator($path = null, $value = null, $minDepth = 0, $maxDepth = -1)
     {
         foreach ($this->_mapping as $child) {
-            foreach ($child->getIterator($path, $value) as $subpath => $subnode) {
+            foreach ($child->getIterator($path, $value, $minDepth, $maxDepth) as $subpath => $subnode) {
                 yield $subpath => $subnode;
             }
         }
