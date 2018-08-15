@@ -8,9 +8,32 @@ class XmlType extends AbstractType
 
     public function __construct($value)
     {
-        if (!is_object($value) || !($value instanceof \XML)) {
-            throw new \InvalidArgumentException($value);
+        $options =  LIBXML_NONET | LIBXML_PARSEHUGE | LIBXML_HTML_NOIMPLIED |
+                    LIBXML_HTML_NODEFDTD | LIBXML_NOXMLDECL;
+
+        $doc = new \DOMDocument();
+        if (is_string($value)) {
+            $doc->loadXML($value, $options);
+            // This exports the XML fragment without an XML prolog.
+            $value = $doc->saveXML($doc->documentElement);
+        } elseif (is_object($value)) {
+            if ($value instanceof \SimpleXMLElement) {
+                $doc->loadXML($value->asXML(), $options);
+                $value = $doc->saveXML($doc->documentElement);
+            } elseif ($value instanceof \DOMDocument) {
+                // This exports the XML fragment without an XML prolog.
+                $value = $value->saveXML($value->documentElement);
+            } elseif ($value instanceof \XMLWriter) {
+                $doc->loadXML($value->flush(false), $options);
+                // This exports the XML fragment without an XML prolog.
+                $value = $value->saveXML($value->documentElement);
+            }
         }
-        $this->_value = $value;
+
+        if (!is_object($value) || !($value instanceof \DOMNode)) {
+            throw new \InvalidArgumentException('Expected a SimpleXMLElement object');
+        }
+
+        $this->_value = $value->saveXML($value);
     }
 }
