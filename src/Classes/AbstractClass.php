@@ -2,6 +2,8 @@
 
 namespace fpoirotte\IDMEF\Classes;
 
+use \fpoirotte\IDMEF\LockException;
+
 /**
  * Abstract class representing an IDMEF class.
  */
@@ -25,6 +27,10 @@ abstract class AbstractClass extends AbstractNode
             throw new \InvalidArgumentException($prop);
         }
 
+        if (isset($this->_my_subclasses[$prop])) {
+            return $prop;
+        }
+
         $mask = 'abcdefghijklmnopqrstuvwxyz-_ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         if (strspn($prop, $mask) !== strlen($prop)) {
             throw new \InvalidArgumentException($prop);
@@ -33,9 +39,6 @@ abstract class AbstractClass extends AbstractNode
         $normProp = str_replace(array(' ', '-', '_'), '', ucwords($prop, ' -_'));
         if (isset($this->_my_subclasses[$normProp])) {
             return $normProp;
-        }
-        if (isset($this->_my_subclasses[$prop])) {
-            return $prop;
         }
         throw new \InvalidArgumentException($prop);
     }
@@ -55,6 +58,10 @@ abstract class AbstractClass extends AbstractNode
         $type = $this->_my_subclasses[$prop];
         if (is_a($type, AbstractClass::class, true) ||
             is_a($type, AbstractList::class, true)) {
+            if ($this->_locked) {
+                throw new \LockException();
+            }
+
             $child = new $type();
             $this->_children[$prop] = $child;
             $child->_parent = $this;
@@ -65,6 +72,10 @@ abstract class AbstractClass extends AbstractNode
 
     public function __set($prop, $value)
     {
+        if ($this->_locked) {
+            throw new \LockException();
+        }
+
         $prop = $this->_normalizeProperty($prop);
         $type = $this->_my_subclasses[$prop];
 
@@ -85,8 +96,18 @@ abstract class AbstractClass extends AbstractNode
         $this->_children[$prop] = $value;
     }
 
+    public function __isset($prop)
+    {
+        $prop = $this->_normalizeProperty($prop);
+        return isset($this->_children[$prop]);
+    }
+
     public function __unset($prop)
     {
+        if ($this->_locked) {
+            throw new \LockException();
+        }
+
         $prop = $this->_normalizeProperty($prop);
         unset($this->_children[$prop]);
     }

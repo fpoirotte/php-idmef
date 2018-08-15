@@ -3,6 +3,7 @@
 namespace fpoirotte\IDMEF\Classes;
 
 use \fpoirotte\IDMEF\Types\AbstractType;
+use \fpoirotte\IDMEF\LockException;
 
 /**
  * Abstract class representing a node in the IDMEF tree.
@@ -12,6 +13,8 @@ abstract class AbstractNode implements \IteratorAggregate
     protected static $_subclasses = array();
     protected $_parent = null;
     protected $_children = array();
+    protected $_lock = null;
+    protected $_locked = false;
 
     public function __get($prop)
     {
@@ -23,9 +26,66 @@ abstract class AbstractNode implements \IteratorAggregate
         throw new \InvalidArgumentException($prop);
     }
 
+    public function __isset($prop)
+    {
+        throw new \InvalidArgumentException($prop);
+    }
+
+    public function __unset($prop)
+    {
+        throw new \InvalidArgumentException($prop);
+    }
+
     public function isValid()
     {
-        throw new \RuntimeException();
+        try {
+            
+        } finally {
+            
+        }
+    }
+
+    public function acquireLock($code)
+    {
+        if ($this->isLocked()) {
+            throw new \LockException();
+        }
+
+        $locked = array();
+        try {
+            foreach ($this->_children as $child) {
+                $child->acquireLock($code);
+                $locked[] = $child;
+            }
+        } catch (\Exception $e) {
+            foreach ($locked as $child) {
+                $child->releaseLock($code);
+            }
+            throw $e;
+        }
+        $this->_lock = $code;
+        $this->_locked = true;
+    }
+
+    public function releaseLock($code)
+    {
+        if (!$this->isLocked()) {
+            throw new \LockException();
+        }
+
+        if ($code !== $this->_lock) {
+            throw new \InvalidArgumentException($code);
+        }
+        foreach ($this->_children as $child) {
+            $child->releaseLock($code);
+        }
+        $this->_locked = false;
+        $this->_lock = null;
+    }
+
+    public function isLocked()
+    {
+        return $this->_locked;
     }
 
     public function getParent()
@@ -56,6 +116,9 @@ abstract class AbstractNode implements \IteratorAggregate
             $children[$k] = $child;
         }
         $this->_children = $children;
+        $this->_parent = null;
+        $this->_lock = null;
+        $this->_locked = false;
     }
 
     public function getIterator($path = null, $value = null, $minDepth = 0, $maxDepth = -1)
