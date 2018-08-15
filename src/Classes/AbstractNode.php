@@ -136,7 +136,7 @@ abstract class AbstractNode implements \IteratorAggregate
         $this->_locks = array(0, 0);
     }
 
-    public function getIterator($path = null, $value = null, $minDepth = 0, $maxDepth = -1)
+    public function getIterator($path = null, $value = null, $minDepth = 1, $maxDepth = 1)
     {
         $matchesPath = true;
         $matchesValue = ($value === null) || (($this instanceof AbstractType) && $this->getValue() === $value);

@@ -103,7 +103,7 @@ abstract class AbstractList extends AbstractNode implements \ArrayAccess, \Itera
      * Specialized iterator factory that acts as a passthrough
      * and does not modify the $minDepth/$maxDepth parameters.
      */
-    public function getIterator($path = null, $value = null, $minDepth = 0, $maxDepth = -1)
+    public function getIterator($path = null, $value = null, $minDepth = 0, $maxDepth = 0)
     {
         foreach ($this->_children as $child) {
             foreach ($child->getIterator($path, $value, $minDepth, $maxDepth) as $subpath => $subnode) {
