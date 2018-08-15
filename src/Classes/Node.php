@@ -13,6 +13,6 @@ class Node extends AbstractClass
         'category'      => NodeCategoryEnum::class,
         'location'      => StringType::class,
         'name'          => StringType::class,
-        'address'       => AddressList::class,
+        'Address'       => AddressList::class,
     );
 }

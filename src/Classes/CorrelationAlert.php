@@ -9,8 +9,8 @@ class CorrelationAlert extends Alert
 {
     protected static $_subclasses = array(
         'name'              => StringType::class,
-        // Named "alertident" in RFC 4765 and used as both a class
-        // and an attribute, which is not really practical.
+        // FIXME: "alertident" is defined as both a class and an attribute
+        // in RFC 4765, which is not really practical.
         // Therefore, we chose to rename it and use it like a class.
         'alerts'            => AlertIdentList::class,
     );
