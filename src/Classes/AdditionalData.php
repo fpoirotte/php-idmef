@@ -23,7 +23,7 @@ class AdditionalData extends AbstractClass
     {
         if ($offset === 'data') {
             if ($value === null) {
-                // Do nothing
+                throw new \InvalidArgumentException($value);
             } elseif (is_string($value)) {
                 $value = new StringType($value);
             } elseif (is_bool($value)) {
@@ -37,7 +37,9 @@ class AdditionalData extends AbstractClass
                     $value = clone $value;
                 } elseif ($value instanceof \DateTimeInterface) {
                     $value = new DateTimeType($value);
-                } elseif ($value instanceof \XML) {
+                } elseif (($value instanceof \DOMnode) ||
+                          ($value instanceof \SimpleXMLElement) ||
+                          ($value instanceof \XMLWriter)) {
                     $value = new XmlType($value);
                 } else {
                     throw new \InvalidArgumentException($value);
