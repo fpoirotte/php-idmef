@@ -90,7 +90,11 @@ abstract class AbstractNode implements \IteratorAggregate
 
     public function getParent()
     {
-        return $this->_parent;
+        $parent = $this->_parent;
+        if (is_object($parent) && ($parent instanceof AbstractList)) {
+            $parent = $parent->getParent();
+        }
+        return $parent;
     }
 
     public function getPath()
