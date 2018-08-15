@@ -2,6 +2,9 @@
 
 namespace fpoirotte\IDMEF\Classes;
 
+/**
+ * Abstract class representing a list of IDMEF classes or attributes.
+ */
 abstract class AbstractList extends AbstractNode implements \ArrayAccess, \IteratorAggregate, \Countable
 {
     protected $_mapping = array();

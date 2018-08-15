@@ -4,6 +4,9 @@ namespace fpoirotte\IDMEF\Types;
 
 use \fpoirotte\IDMEF\Classes\AbstractNode;
 
+/**
+ * Abstract class representing an IDMEF type.
+ */
 abstract class AbstractType extends AbstractNode
 {
     protected $_value;

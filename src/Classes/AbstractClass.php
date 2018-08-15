@@ -2,6 +2,9 @@
 
 namespace fpoirotte\IDMEF\Classes;
 
+/**
+ * Abstract class representing an IDMEF class.
+ */
 abstract class AbstractClass extends AbstractNode
 {
     protected $_my_subclasses = array();

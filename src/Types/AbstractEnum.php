@@ -2,6 +2,9 @@
 
 namespace fpoirotte\IDMEF\Types;
 
+/**
+ * Abstract class representing an enumeration.
+ */
 abstract class AbstractEnum extends AbstractType
 {
     protected $_choices = array();

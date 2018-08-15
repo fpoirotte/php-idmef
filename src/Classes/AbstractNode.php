@@ -4,6 +4,9 @@ namespace fpoirotte\IDMEF\Classes;
 
 use \fpoirotte\IDMEF\Types\AbstractType;
 
+/**
+ * Abstract class representing a node in the IDMEF tree.
+ */
 abstract class AbstractNode implements \IteratorAggregate
 {
     protected static $_subclasses = array();
