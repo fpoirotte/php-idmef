@@ -13,4 +13,12 @@ class CharacterType extends AbstractType
         }
         $this->_value = $value;
     }
+
+    public function unserialize($serialized)
+    {
+        if (strlen($serialized) !== 1) {
+            throw new \InvalidArgumentException($serialized);
+        }
+        $this->_value = $serialized;
+    }
 }

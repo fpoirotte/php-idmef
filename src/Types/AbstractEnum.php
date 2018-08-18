@@ -11,9 +11,14 @@ abstract class AbstractEnum extends AbstractType
 
     public function __construct($value)
     {
-        if (!in_array($value, $this->_choices, true)) {
-            throw new \InvalidArgumentException($value);
+        $this->unserialize($value);
+    }
+
+    public function unserialize($serialized)
+    {
+        if (!in_array($serialized, $this->_choices, true)) {
+            throw new \InvalidArgumentException($serialized);
         }
-        $this->_value = $value;
+        $this->_value = $serialized;
     }
 }

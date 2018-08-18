@@ -7,7 +7,7 @@ use \fpoirotte\IDMEF\Classes\AbstractNode;
 /**
  * Abstract class representing an IDMEF type.
  */
-abstract class AbstractType extends AbstractNode
+abstract class AbstractType extends AbstractNode implements \Serializable
 {
     protected $_value;
     const XML_TYPE = null;
@@ -29,5 +29,10 @@ abstract class AbstractType extends AbstractNode
         }
 
         return $this->_parent->getPath($this) . '.' . $this->_parent->__get($this);
+    }
+
+    public function serialize()
+    {
+        return (string) $this;
     }
 }

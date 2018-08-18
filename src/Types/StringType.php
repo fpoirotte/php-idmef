@@ -11,6 +11,11 @@ class StringType extends AbstractType
         if (!is_string($value)) {
             throw new \InvalidArgumentException($value);
         }
-        $this->_value = $value;
+        $this->unserialize($value);
+    }
+
+    public function unserialize($serialized)
+    {
+        $this->_value = $serialized;
     }
 }

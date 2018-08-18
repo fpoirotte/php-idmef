@@ -13,4 +13,18 @@ class RealType extends AbstractType
         }
         $this->_value = $value;
     }
+
+    public function unserialize($serialized)
+    {
+        $value = filter_var(
+            str_replace(',', '.', $serialized),
+            FILTER_VALIDATE_FLOAT,
+            array("flags" => FILTER_FLAG_ALLOW_FRACTION)
+        );
+
+        if ($value === false) {
+            throw new \InvalidArgumentException($serialized);
+        }
+        $this->_value = $value;
+    }
 }

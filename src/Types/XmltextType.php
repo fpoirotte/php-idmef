@@ -2,7 +2,7 @@
 
 namespace fpoirotte\IDMEF\Types;
 
-class XmlType extends AbstractType
+class XmltextType extends AbstractType
 {
     const XML_TYPE = 'xmltext';
 
@@ -35,5 +35,17 @@ class XmlType extends AbstractType
         }
 
         $this->_value = $value->saveXML($value);
+    }
+
+    public function unserialize($serialized)
+    {
+        $options =  LIBXML_NONET | LIBXML_PARSEHUGE | LIBXML_HTML_NOIMPLIED |
+                    LIBXML_HTML_NODEFDTD | LIBXML_NOXMLDECL;
+
+        $doc = new \DOMDocument();
+        $doc->loadXML($serialized, $options);
+
+        // This exports the XML fragment without an XML prolog.
+        $this->_value = $doc->saveXML($doc->documentElement);
     }
 }

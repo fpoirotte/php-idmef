@@ -13,4 +13,13 @@ class IntegerType extends AbstractType
         }
         $this->_value = $value;
     }
+
+    public function unserialize($serialized)
+    {
+        $serialized = strtolower($serialized);
+        if (sscanf($serialized, '%d', $this->_value) !== 1 &&
+            sscanf($serialized, '%x', $this->_value) !== 1) {
+            throw new \InvalidArgumentException($serialized);
+        }
+    }
 }

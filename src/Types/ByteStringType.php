@@ -10,4 +10,13 @@ class ByteStringType extends StringType
     {
         return base64_encode(parent::__toString());
     }
+
+    public function unserialize($serialized)
+    {
+        $value = base64_decode($serialized, true);
+        if ($value === false) {
+            throw new \InvalidArgumentException($serialized);
+        }
+        $this->_value = $value;
+    }
 }
