@@ -21,6 +21,11 @@ abstract class AbstractList extends AbstractNode implements \ArrayAccess, \Itera
         return count($this->_children);
     }
 
+    protected function changeChildParent($child)
+    {
+        $child->_parent = $this;
+    }
+
     public function offsetExists($offset)
     {
         return isset($this->_children[$offset]);
@@ -42,7 +47,7 @@ abstract class AbstractList extends AbstractNode implements \ArrayAccess, \Itera
             try {
                 $cls = $this->_type;
                 $child = new $cls;
-                $child->_parent = $this;
+                $this->changeChildParent($child);
                 if ($offset === null) {
                     $this->_children[] = $child;
                 } else {
@@ -66,7 +71,7 @@ abstract class AbstractList extends AbstractNode implements \ArrayAccess, \Itera
         $this->acquireLock(self::LOCK_EXCLUSIVE);
         try {
             $value = clone $value;
-            $value->_parent = $this;
+            $this->changeChildParent($value);
             if ($offset === null) {
                 $this->_children[] = $value;
             } else {
