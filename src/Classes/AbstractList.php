@@ -11,6 +11,11 @@ abstract class AbstractList extends AbstractNode implements \ArrayAccess, \Itera
 {
     protected $_type = null;
 
+    public function getItemsType()
+    {
+        return $this->_type;
+    }
+
     public function count()
     {
         return count($this->_children);
