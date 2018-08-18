@@ -40,7 +40,7 @@ class AdditionalData extends AbstractClass
                 } elseif (($value instanceof \DOMnode) ||
                           ($value instanceof \SimpleXMLElement) ||
                           ($value instanceof \XMLWriter)) {
-                    $value = new XmlType($value);
+                    $value = new XmltextType($value);
                 } else {
                     throw new \InvalidArgumentException($value);
                 }
