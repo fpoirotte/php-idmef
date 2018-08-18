@@ -7,7 +7,7 @@ use \fpoirotte\IDMEF\Types\NtpStampType;
 use \fpoirotte\IDMEF\Classes\Analyzer;
 use \fpoirotte\IDMEF\Classes\AdditionalDataList;
 
-class Heartbeat extends IDMEFMessage
+class Heartbeat extends AbstractIDMEFMessage
 {
     protected static $_subclasses = array(
         'messageid'         => StringType::class,

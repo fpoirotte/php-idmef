@@ -11,7 +11,7 @@ use \fpoirotte\IDMEF\Classes\Classification;
 use \fpoirotte\IDMEF\Classes\Assessment;
 use \fpoirotte\IDMEF\Classes\AdditionalDataList;
 
-class Alert extends IDMEFMessage
+class Alert extends AbstractIDMEFMessage
 {
     protected static $_subclasses = array(
         'messageid'         => StringType::class,
