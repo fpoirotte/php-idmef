@@ -141,10 +141,11 @@ abstract class AbstractNode implements \IteratorAggregate
         $matchesPath = true;
         $matchesValue = ($value === null) || (($this instanceof AbstractType) && $this->getValue() === $value);
         $matchesDepth = ($minDepth <= 0);
+        $myPath = $this->getPath();
 
         if ($path !== null && $matchesDepth) {
             $pathParts  = explode('.', $path);
-            $thisParts  = explode('.', $this->getPath());
+            $thisParts  = explode('.', $myPath);
             $pathLen    = count($pathParts);
             $thisLen    = count($thisParts);
             $isClass    = false;
@@ -191,7 +192,7 @@ abstract class AbstractNode implements \IteratorAggregate
         }
 
         if ($matchesPath && $matchesValue && $matchesDepth) {
-            yield $this;
+            yield $myPath => $this;
         }
 
         if ($minDepth > 0) {
