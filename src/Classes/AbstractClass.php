@@ -40,7 +40,9 @@ abstract class AbstractClass extends AbstractNode
         if (isset($this->_my_subclasses[$normProp])) {
             return $normProp;
         }
-        throw new \InvalidArgumentException($prop);
+
+        $cls = get_class($this);
+        throw new \InvalidArgumentException("$cls has no attribute '$prop'");
     }
 
     public function __get($prop)
@@ -68,7 +70,7 @@ abstract class AbstractClass extends AbstractNode
             }
             return $child;
         }
-        return null;
+        throw new \InvalidArgumentException($prop);
     }
 
     public function __set($prop, $value)
