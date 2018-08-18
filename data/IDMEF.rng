@@ -1,0 +1,1467 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ===================================================================
+ =======================================================================
+ =======                                                         =======
+ ======= The Intrusion Detection Message Exchange Format (IDMEF) =======
+ =======                        RFC  4765                        =======
+ =======                                                         =======
+ =======   Relax NG Schema by F. Poirotte <clicky@erebot.net>    =======
+ =======================================================================
+ =================================================================== -->
+<grammar xmlns="http://relaxng.org/ns/structure/1.0"
+    ns="http://iana.org/idmef"
+    xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0"
+    datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+
+    <!-- Entry point -->
+    <start>
+        <ref name="IDMEF-Message"/>
+    </start>
+
+    <!--
+     | Helper used by the "xmltype" element, to allow any sub-content.
+    -->
+    <define name="anyContent">
+        <element>
+            <anyName/>
+            <zeroOrMore>
+                <choice>
+                    <attribute>
+                        <anyName/>
+                    </attribute>
+                    <text/>
+                    <ref name="anyContent"/>
+                </choice>
+            </zeroOrMore>
+        </element>
+    </define>
+
+
+    <!-- ===============================================================
+     ===================================================================
+     === SECTION 1.  Attribute list declarations.
+     ===================================================================
+     =============================================================== -->
+
+    <!--
+     | Attributes of the IDMEF element.  In general, the fixed values of
+     | these attributes will change each time a new version of the DTD
+     | is released.
+    -->
+    <define name="attlist.idmef">
+        <attribute name="version">
+            <value>1.0</value>
+        </attribute>
+    </define>
+
+    <!--
+     | Attributes of all elements.  These are the "XML" attributes that
+     | every element should have.  Space handling, language, and name
+     | space.
+    -->
+    <define name="attlist.global">
+        <optional>
+            <attribute name="xml:space" a:defaultValue="preserve">
+                <choice>
+                    <value>default</value>
+                    <value>preserve</value>
+                </choice>
+            </attribute>
+        </optional>
+        <optional>
+            <attribute name="xml:lang">
+                <data type="NMTOKEN"/>
+            </attribute>
+        </optional>
+    </define>
+
+
+   <!-- ===============================================================
+    ===================================================================
+    === SECTION 2.  Attribute value declarations.  Enumerated values for
+    ===            many of the element-specific attribute lists.
+    ===================================================================
+    =============================================================== -->
+
+   <!--
+    | Values for the Action.category attribute.
+    -->
+    <define name="attvals.actioncat">
+        <choice>
+            <value>block-installed</value>
+            <value>notification-sent</value>
+            <value>taken-offline</value>
+            <value>other</value>
+        </choice>
+    </define>
+
+   <!--
+    | Values for the Address.category attribute.
+    -->
+    <define name="attvals.addrcat">
+        <choice>
+            <value>unknown</value>
+            <value>atm</value>
+            <value>e-mail</value>
+            <value>lotus-notes</value>
+            <value>mac</value>
+            <value>sna</value>
+            <value>vm</value>
+            <value>ipv4-addr</value>
+            <value>ipv4-addr-hex</value>
+            <value>ipv4-net</value>
+            <value>ipv4-net-mask</value>
+            <value>ipv6-addr</value>
+            <value>ipv6-addr-hex</value>
+            <value>ipv6-net</value>
+            <value>ipv6-net-mask</value>
+        </choice>
+    </define>
+
+   <!--
+    | Values for the AdditionalData.type attribute.
+    -->
+    <define name="attvals.adtype">
+        <choice>
+            <value>boolean</value>
+            <value>byte</value>
+            <value>character</value>
+            <value>date-time</value>
+            <value>integer</value>
+            <value>ntpstamp</value>
+            <value>portlist</value>
+            <value>real</value>
+            <value>string</value>
+            <value>byte-string</value>
+            <value>xmltext</value>
+        </choice>
+    </define>
+
+   <!--
+    | Values for the Impact.completion attribute.
+    -->
+    <define name="attvals.completion">
+        <choice>
+            <value>failed</value>
+            <value>succeeded</value>
+        </choice>
+    </define>
+
+   <!--
+    | Values for the File.category attribute.
+    -->
+    <define name="attvals.filecat">
+        <choice>
+            <value>current</value>
+            <value>original</value>
+        </choice>
+    </define>
+
+   <!--
+    | Values for the Permission.perms attribute.
+    -->
+    <define name="attvals.fileperm">
+        <choice>
+            <value>noAccess</value>
+            <value>read</value>
+            <value>write</value>
+            <value>execute</value>
+            <value>search</value>
+            <value>delete</value>
+            <value>executeAs</value>
+            <value>changePermissions</value>
+            <value>takeOwnership</value>
+        </choice>
+    </define>
+
+   <!--
+    | Values for the UserId.type attribute.
+    -->
+    <define name="attvals.idtype">
+        <choice>
+            <value>current-user</value>
+            <value>original-user</value>
+            <value>target-user</value>
+            <value>user-privs</value>
+            <value>current-group</value>
+            <value>group-privs</value>
+            <value>other-privs</value>
+        </choice>
+    </define>
+
+   <!--
+    | Values for the Impact.type attribute.
+    -->
+    <define name="attvals.impacttype">
+        <choice>
+            <value>admin</value>
+            <value>dos</value>
+            <value>file</value>
+            <value>recon</value>
+            <value>user</value>
+            <value>other</value>
+        </choice>
+    </define>
+
+   <!--
+    | Values for the Linkage.category attribute.
+    -->
+    <define name="attvals.linkcat">
+        <choice>
+            <value>hard-link</value>
+            <value>mount-point</value>
+            <value>reparse-point</value>
+            <value>shortcut</value>
+            <value>stream</value>
+            <value>symbolic-link</value>
+        </choice>
+    </define>
+
+   <!--
+    | Values for the Checksum.algorithm attribute
+    -->
+    <define name="attvals.checksumalgos">
+        <choice>
+            <value>MD4</value>
+            <value>MD5</value>
+            <value>SHA1</value>
+            <value>SHA2-256</value>
+            <value>SHA2-384</value>
+            <value>SHA2-512</value>
+            <value>CRC-32</value>
+            <value>Haval</value>
+            <value>Tiger</value>
+            <value>Gost</value>
+        </choice>
+    </define>
+
+   <!--
+    | Values for the Node.category attribute.
+    -->
+    <define name="attvals.nodecat">
+        <choice>
+            <value>unknown</value>
+            <value>ads</value>
+            <value>afs</value>
+            <value>coda</value>
+            <value>dfs</value>
+            <value>dns</value>
+            <value>hosts</value>
+            <value>kerberos</value>
+            <value>nds</value>
+            <value>nis</value>
+            <value>nisplus</value>
+            <value>nt</value>
+            <value>wfw</value>
+        </choice>
+    </define>
+
+   <!--
+    | Values for the Reference.origin attribute.
+    -->
+    <define name="attvals.origin">
+        <choice>
+            <value>unknown</value>
+            <value>vendor-specific</value>
+            <value>user-specific</value>
+            <value>bugtraqid</value>
+            <value>cve</value>
+            <value>osvdb</value>
+        </choice>
+    </define>
+
+   <!--
+    | Values for the Confidence.rating attribute.
+    -->
+    <define name="attvals.rating">
+        <choice>
+            <value>low</value>
+            <value>medium</value>
+            <value>high</value>
+            <value>numeric</value>
+        </choice>
+    </define>
+
+   <!--
+    | Values for the Impact.severity attribute.
+    -->
+    <define name="attvals.severity">
+        <choice>
+            <value>info</value>
+            <value>low</value>
+            <value>high</value>
+            <value>medium</value>
+        </choice>
+    </define>
+
+   <!--
+    | Values for the User.category attribute.
+    -->
+    <define name="attvals.usercat">
+        <choice>
+            <value>unknown</value>
+            <value>application</value>
+            <value>os-device</value>
+        </choice>
+    </define>
+
+   <!--
+    | Values for yes/no attributes such as Source.spoofed and
+    | Target.decoy.
+    -->
+    <define name="attvals.yesno">
+        <choice>
+            <value>unknown</value>
+            <value>yes</value>
+            <value>no</value>
+        </choice>
+    </define>
+
+
+   <!-- ===============================================================
+    ===================================================================
+    === SECTION 3.  Top-level element declarations.  The IDMEF-Message
+    ===            element and the types of messages it can include.
+    ===================================================================
+    =============================================================== -->
+
+    <define name="IDMEF-Message">
+        <element name="IDMEF-Message">
+            <zeroOrMore>
+                <choice>
+                    <ref name="Alert"/>
+                    <ref name="Heartbeat"/>
+                </choice>
+            </zeroOrMore>
+
+            <ref name="attlist.idmef"/>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="Alert">
+        <element name="Alert">
+            <ref name="Analyzer"/>
+            <ref name="CreateTime"/>
+            <optional>
+                <ref name="DetectTime"/>
+            </optional>
+            <optional>
+                <ref name="AnalyzerTime"/>
+            </optional>
+            <zeroOrMore>
+                <ref name="Source"/>
+            </zeroOrMore>
+            <zeroOrMore>
+                <ref name="Target"/>
+            </zeroOrMore>
+            <ref name="Classification"/>
+            <optional>
+                <ref name="Assessment"/>
+            </optional>
+            <optional>
+                <choice>
+                    <ref name="ToolAlert"/>
+                    <ref name="OverflowAlert"/>
+                    <ref name="CorrelationAlert"/>
+                </choice>
+            </optional>
+            <zeroOrMore>
+                <ref name="AdditionalData"/>
+            </zeroOrMore>
+
+            <optional>
+                <attribute name="messageid" a:defaultValue="0">
+                    <text/>
+                </attribute>
+            </optional>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="Heartbeat">
+        <element name="Heartbeat">
+            <ref name="Analyzer"/>
+            <ref name="CreateTime"/>
+            <optional>
+                <ref name="HeartbeatInterval"/>
+            </optional>
+            <optional>
+                <ref name="AnalyzerTime"/>
+            </optional>
+            <zeroOrMore>
+                <ref name="AdditionalData"/>
+            </zeroOrMore>
+
+            <optional>
+                <attribute name="messageid" a:defaultValue="0">
+                    <text/>
+                </attribute>
+            </optional>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+
+   <!-- ===============================================================
+    ===================================================================
+    === SECTION 4.  Subclasses of the Alert element that provide more
+    ===            data for specific types of alerts.
+    ===================================================================
+    =============================================================== -->
+
+    <define name="CorrelationAlert">
+        <element name="CorrelationAlert">
+            <ref name="name"/>
+            <oneOrMore>
+                <ref name="alertident"/>
+            </oneOrMore>
+
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="OverflowAlert">
+        <element name="OverflowAlert">
+            <ref name="program"/>
+            <optional>
+                <ref name="size"/>
+            </optional>
+            <optional>
+                <ref name="buffer"/>
+            </optional>
+
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="ToolAlert">
+        <element name="ToolAlert">
+            <ref name="name"/>
+            <optional>
+                <ref name="command"/>
+            </optional>
+            <oneOrMore>
+                <ref name="alertident"/>
+            </oneOrMore>
+
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+
+   <!-- ===============================================================
+    ===================================================================
+    === SECTION 5.  The AdditionalData element.  This element allows an
+    ===             alert to include additional information that cannot
+    ===             be encoded elsewhere in the data model.
+    ===================================================================
+    =============================================================== -->
+
+    <define name="AdditionalData">
+        <element name="AdditionalData">
+            <choice>
+                <ref name="boolean"/>
+                <ref name="byte"/>
+                <ref name="character"/>
+                <ref name="date-time"/>
+                <ref name="integer"/>
+                <ref name="ntpstamp"/>
+                <ref name="portlist"/>
+                <ref name="real"/>
+                <ref name="string"/>
+                <ref name="byte-string"/>
+                <ref name="xmltext"/>
+            </choice>
+
+            <optional>
+                <attribute name="type" a:defaultValue="string">
+                    <ref name="attvals.adtype"/>
+                </attribute>
+            </optional>
+            <optional>
+                <attribute name="meaning"><text/></attribute>
+            </optional>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+
+   <!-- ===============================================================
+    ===================================================================
+    === SECTION 6.  Elements related to identifying entities - analyzers
+    ===            (the senders of these messages), sources (of
+    ===            attacks), and targets (of attacks).
+    ===================================================================
+    =============================================================== -->
+
+    <define name="Analyzer">
+        <element name="Analyzer">
+            <optional>
+                <ref name="Node"/>
+            </optional>
+            <optional>
+                <ref name="Process"/>
+            </optional>
+            <optional>
+                <ref name="Analyzer"/>
+            </optional>
+
+            <optional>
+                <attribute name="analyzerid" a:defaultValue="0">
+                    <text/>
+                </attribute>
+            </optional>
+            <optional>
+                <attribute name="name"><text/></attribute>
+            </optional>
+            <optional>
+                <attribute name="manufacturer"><text/></attribute>
+            </optional>
+            <optional>
+                <attribute name="model"><text/></attribute>
+            </optional>
+            <optional>
+                <attribute name="version"><text/></attribute>
+            </optional>
+            <optional>
+                <attribute name="class"><text/></attribute>
+            </optional>
+            <optional>
+                <attribute name="ostype"><text/></attribute>
+            </optional>
+            <optional>
+                <attribute name="osversion"><text/></attribute>
+            </optional>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="Classification">
+        <element name="Classification">
+            <zeroOrMore>
+                <ref name="Reference"/>
+            </zeroOrMore>
+
+            <optional>
+                <attribute name="ident" a:defaultValue="0">
+                    <text/>
+                </attribute>
+            </optional>
+            <attribute name="text"><text/></attribute>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="Source">
+        <element name="Source">
+            <optional>
+                <ref name="Node"/>
+            </optional>
+            <optional>
+                <ref name="User"/>
+            </optional>
+            <optional>
+                <ref name="Process"/>
+            </optional>
+            <optional>
+                <ref name="Service"/>
+            </optional>
+
+            <optional>
+                <attribute name="ident" a:defaultValue="0">
+                    <text/>
+                </attribute>
+            </optional>
+            <optional>
+                <attribute name="spoofed" a:defaultValue="unknown">
+                    <ref name="attvals.yesno"/>
+                </attribute>
+            </optional>
+            <optional>
+                <attribute name="interface"><text/></attribute>
+            </optional>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="Target">
+        <element name="Target">
+            <optional>
+                <ref name="Node"/>
+            </optional>
+            <optional>
+                <ref name="User"/>
+            </optional>
+            <optional>
+                <ref name="Process"/>
+            </optional>
+            <optional>
+                <ref name="Service"/>
+            </optional>
+            <zeroOrMore>
+                <ref name="File"/>
+            </zeroOrMore>
+
+            <optional>
+                <attribute name="ident" a:defaultValue="0">
+                    <text/>
+                </attribute>
+            </optional>
+            <optional>
+                <attribute name="decoy" a:defaultValue="unknown">
+                    <ref name="attvals.yesno"/>
+                </attribute>
+            </optional>
+            <optional>
+                <attribute name="interface"><text/></attribute>
+            </optional>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="Assessment">
+        <element name="Assessment">
+            <optional>
+                <ref name="Impact"/>
+            </optional>
+            <zeroOrMore>
+                <ref name="Action"/>
+            </zeroOrMore>
+            <optional>
+                <ref name="Confidence"/>
+            </optional>
+
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+
+   <!-- ===============================================================
+    ===================================================================
+    === SECTION 7.  Support elements used for providing detailed info
+    ===            about entities - addresses, names, etc.
+    ===================================================================
+    =============================================================== -->
+
+    <define name="Reference">
+        <element name="Reference">
+            <ref name="name"/>
+            <ref name="url"/>
+
+            <optional>
+                <attribute name="origin" a:defaultValue="unknown">
+                    <ref name="attvals.origin"/>
+                </attribute>
+            </optional>
+            <optional>
+                <attribute name="meaning"><text/></attribute>
+            </optional>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="Node">
+        <element name="Node">
+            <optional>
+                <ref name="location"/>
+            </optional>
+            <choice>
+                <ref name="name"/>
+                <ref name="Address"/>
+            </choice>
+            <zeroOrMore>
+                <ref name="Address"/>
+            </zeroOrMore>
+
+            <optional>
+                <attribute name="ident" a:defaultValue="0">
+                    <text/>
+                </attribute>
+            </optional>
+            <optional>
+                <attribute name="category" a:defaultValue="unknown">
+                    <ref name="attvals.nodecat"/>
+                </attribute>
+            </optional>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="Address">
+        <element name="Address">
+            <ref name="address"/>
+            <optional>
+                <ref name="netmask"/>
+            </optional>
+
+            <optional>
+                <attribute name="ident" a:defaultValue="0">
+                    <text/>
+                </attribute>
+            </optional>
+            <optional>
+                <attribute name="category" a:defaultValue="unknown">
+                    <ref name="attvals.addrcat"/>
+                </attribute>
+            </optional>
+            <optional>
+                <attribute name="vlan-name"><text/></attribute>
+            </optional>
+            <optional>
+                <attribute name="vlan-num"><text/></attribute>
+            </optional>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="File">
+        <element name="File">
+            <ref name="name"/>
+            <ref name="path"/>
+            <optional>
+                <ref name="create-time"/>
+            </optional>
+            <optional>
+                <ref name="modify-time"/>
+            </optional>
+            <optional>
+                <ref name="access-time"/>
+            </optional>
+            <optional>
+                <ref name="data-size"/>
+            </optional>
+            <optional>
+                <ref name="disk-size"/>
+            </optional>
+            <zeroOrMore>
+                <ref name="FileAccess"/>
+            </zeroOrMore>
+            <zeroOrMore>
+                <ref name="Linkage"/>
+            </zeroOrMore>
+            <optional>
+                <ref name="Inode"/>
+            </optional>
+            <zeroOrMore>
+                <ref name="Checksum"/>
+            </zeroOrMore>
+
+            <optional>
+                <attribute name="ident" a:defaultValue="0">
+                    <text/>
+                </attribute>
+            </optional>
+            <attribute name="category">
+                <ref name="attvals.filecat"/>
+            </attribute>
+            <optional>
+                <attribute name="fstype"><text/></attribute>
+            </optional>
+            <optional>
+                <attribute name="file-type"><text/></attribute>
+            </optional>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="Permission">
+        <element name="Permission">
+            <empty/>
+
+            <attribute name="perms">
+                <ref name="attvals.fileperm"/>
+            </attribute>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="FileAccess">
+        <element name="FileAccess">
+            <ref name="UserId"/>
+            <oneOrMore>
+                <ref name="Permission"/>
+            </oneOrMore>
+
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="Inode">
+        <element name="Inode">
+            <optional>
+                <ref name="change-time"/>
+            </optional>
+            <optional>
+                <ref name="number"/>
+                <ref name="major-device"/>
+                <ref name="minor-device"/>
+            </optional>
+            <optional>
+                <ref name="c-major-device"/>
+                <ref name="c-minor-device"/>
+            </optional>
+
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="Linkage">
+        <element name="Linkage">
+            <choice>
+                <group>
+                    <ref name="name"/>
+                    <ref name="path"/>
+                </group>
+                <ref name="File"/>
+            </choice>
+
+            <attribute name="category">
+                <ref name="attvals.linkcat"/>
+            </attribute>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="Checksum">
+        <element name="Checksum">
+            <ref name="value"/>
+            <optional>
+                <ref name="key"/>
+            </optional>
+
+            <attribute name="algorithm">
+                <ref name="attvals.checksumalgos"/>
+            </attribute>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="Process">
+        <element name="Process">
+            <ref name="name"/>
+            <optional>
+                <ref name="pid"/>
+            </optional>
+            <optional>
+                <ref name="path"/>
+            </optional>
+            <zeroOrMore>
+                <ref name="arg"/>
+            </zeroOrMore>
+            <zeroOrMore>
+                <ref name="env"/>
+            </zeroOrMore>
+
+            <optional>
+                <attribute name="ident" a:defaultValue="0">
+                    <text/>
+                </attribute>
+            </optional>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="Service">
+        <element name="Service">
+            <choice>
+                <choice>
+                    <group>
+                        <ref name="name"/>
+                        <optional>
+                            <ref name="port"/>
+                        </optional>
+                    </group>
+                    <group>
+                        <ref name="port"/>
+                        <optional>
+                            <ref name="name"/>
+                        </optional>
+                    </group>
+                </choice>
+                <ref name="portlist"/>
+            </choice>
+            <optional>
+                <ref name="protocol"/>
+            </optional>
+            <optional>
+                <ref name="SNMPService"/>
+            </optional>
+            <optional>
+                <ref name="WebService"/>
+            </optional>
+
+            <optional>
+                <attribute name="ident" a:defaultValue="0">
+                    <text/>
+                </attribute>
+            </optional>
+            <optional>
+                <attribute name="ip_version"><text/></attribute>
+            </optional>
+            <optional>
+                <attribute name="iana_protocol_number"><text/></attribute>
+            </optional>
+            <optional>
+                <attribute name="iana_protocol_name"><text/></attribute>
+            </optional>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="SNMPService">
+        <element name="SNMPService">
+            <optional>
+                <ref name="oid"/>
+            </optional>
+            <optional>
+                <ref name="messageProcessingModel"/>
+            </optional>
+            <optional>
+                <ref name="securityModel"/>
+            </optional>
+            <optional>
+                <ref name="securityName"/>
+            </optional>
+            <optional>
+                <ref name="securityLevel"/>
+            </optional>
+            <optional>
+                <ref name="contextName"/>
+            </optional>
+            <optional>
+                <ref name="contextEngineID"/>
+            </optional>
+            <optional>
+                <ref name="command"/>
+            </optional>
+
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="User">
+        <element name="User">
+            <zeroOrMore>
+                <ref name="UserId"/>
+            </zeroOrMore>
+
+            <optional>
+                <attribute name="ident" a:defaultValue="0">
+                    <text/>
+                </attribute>
+            </optional>
+            <optional>
+                <attribute name="category" a:defaultValue="unknown">
+                    <ref name="attvals.usercat"/>
+                </attribute>
+            </optional>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="UserId">
+        <element name="UserId">
+            <choice>
+                <group>
+                    <ref name="name"/>
+                    <optional>
+                        <ref name="number"/>
+                    </optional>
+                </group>
+                <group>
+                    <ref name="number"/>
+                    <optional>
+                        <ref name="name"/>
+                    </optional>
+                </group>
+            </choice>
+
+            <optional>
+                <attribute name="ident" a:defaultValue="0">
+                    <text/>
+                </attribute>
+            </optional>
+            <optional>
+                <attribute name="type" a:defaultValue="unknown">
+                    <ref name="attvals.idtype"/>
+                </attribute>
+            </optional>
+            <optional>
+                <attribute name="tty"><text/></attribute>
+            </optional>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="WebService">
+        <element name="WebService">
+            <ref name="url"/>
+            <optional>
+                <ref name="cgi"/>
+            </optional>
+            <optional>
+                <ref name="http-method"/>
+            </optional>
+            <zeroOrMore>
+                <ref name="arg"/>
+            </zeroOrMore>
+
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+
+   <!-- ===============================================================
+    ===================================================================
+    === SECTION 8.  Simple elements with sub-elements or attributes of a
+    ===            special nature.
+    ===================================================================
+    =============================================================== -->
+
+    <define name="Action">
+        <element name="Action">
+            <text/>
+
+            <optional>
+                <attribute name="category" a:defaultValue="unknown">
+                    <ref name="attvals.actioncat"/>
+                </attribute>
+            </optional>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="CreateTime">
+        <element name="CreateTime">
+            <text/>
+
+            <attribute name="ntpstamp"><text/></attribute>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="DetectTime">
+        <element name="DetectTime">
+            <text/>
+
+            <attribute name="ntpstamp"><text/></attribute>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="AnalyzerTime">
+        <element name="AnalyzerTime">
+            <text/>
+
+            <attribute name="ntpstamp"><text/></attribute>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="Confidence">
+        <element name="Confidence">
+            <text/>
+
+            <optional>
+                <attribute name="rating" a:defaultValue="numeric">
+                    <ref name="attvals.rating"/>
+                </attribute>
+            </optional>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="Impact">
+        <element name="Impact">
+            <text/>
+
+            <optional>
+                <attribute name="severity">
+                    <ref name="attvals.severity"/>
+                </attribute>
+            </optional>
+            <optional>
+                <attribute name="completion">
+                    <ref name="attvals.completion"/>
+                </attribute>
+            </optional>
+            <optional>
+                <attribute name="type" a:defaultValue="other">
+                    <ref name="attvals.impacttype"/>
+                </attribute>
+            </optional>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="alertident">
+        <element name="alertident">
+            <text/>
+
+            <optional>
+                <attribute name="analyzerid"><text/></attribute>
+            </optional>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+
+   <!-- ===============================================================
+    ===================================================================
+    === SECTION 9.  Simple elements with no sub-elements and no special
+    === attributes.
+    ===================================================================
+    =============================================================== -->
+
+    <define name="boolean">
+        <element name="boolean">
+            <text/>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="byte">
+        <element name="byte">
+            <text/>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="character">
+        <element name="character">
+            <text/>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="date-time">
+        <element name="date-time">
+            <text/>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="integer">
+        <element name="integer">
+            <text/>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="ntpstamp">
+        <element name="boolean">
+            <text/>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="real">
+        <element name="real">
+            <text/>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="string">
+        <element name="string">
+            <text/>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="byte-string">
+        <element name="byte-string">
+            <text/>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="xmltext">
+        <element name="xmltext">
+            <ref name="anyContent"/>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="access-time">
+        <element name="access-time">
+            <text/>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="address">
+        <element name="address">
+            <text/>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="arg">
+        <element name="arg">
+            <text/>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="buffer">
+        <element name="buffer">
+            <text/>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="c-major-device">
+        <element name="c-major-device">
+            <text/>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="c-minor-device">
+        <element name="c-minor-device">
+            <text/>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="cgi">
+        <element name="cgi">
+            <text/>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="change-time">
+        <element name="change-time">
+            <text/>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="command">
+        <element name="command">
+            <text/>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="create-time">
+        <element name="create-time">
+            <text/>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="data-size">
+        <element name="data-size">
+            <text/>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="disk-size">
+        <element name="disk-size">
+            <text/>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="env">
+        <element name="env">
+            <text/>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="http-method">
+        <element name="http-method">
+            <text/>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="location">
+        <element name="location">
+            <text/>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="major-device">
+        <element name="major-device">
+            <text/>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="minor-device">
+        <element name="minor-device">
+            <text/>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="modify-time">
+        <element name="modify-time">
+            <text/>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="name">
+        <element name="name">
+            <text/>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="netmask">
+        <element name="netmask">
+            <text/>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="number">
+        <element name="number">
+            <text/>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="oid">
+        <element name="oid">
+            <text/>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="path">
+        <element name="path">
+            <text/>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="permission">
+        <element name="permission">
+            <text/>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="pid">
+        <element name="pid">
+            <text/>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="port">
+        <element name="port">
+            <text/>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="portlist">
+        <element name="portlist">
+            <text/>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="program">
+        <element name="program">
+            <text/>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="protocol">
+        <element name="protocol">
+            <text/>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="size">
+        <element name="size">
+            <text/>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="url">
+        <element name="url">
+            <text/>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="HeartbeatInterval">
+        <element name="HeartbeatInterval">
+            <text/>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="messageProcessingModel">
+        <element name="messageProcessingModel">
+            <text/>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="securityModel">
+        <element name="securityModel">
+            <text/>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="securityName">
+        <element name="securityName">
+            <text/>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="securityLevel">
+        <element name="securityLevel">
+            <text/>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="contextName">
+        <element name="contextName">
+            <text/>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="contextEngineID">
+        <element name="contextEngineID">
+            <text/>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="value">
+        <element name="value">
+            <text/>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+
+    <define name="key">
+        <element name="key">
+            <text/>
+            <ref name="attlist.global"/>
+        </element>
+    </define>
+</grammar>

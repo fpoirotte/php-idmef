@@ -12,13 +12,20 @@ use \fpoirotte\IDMEF\Classes\AbstractList;
  */
 class Xml extends AbstractSerializer
 {
+    const XMLNS = 'http://iana.org/idmef';
+
     protected $indent;
     protected $out;
+    protected $in;
 
     public function __construct($indent = false)
     {
         $this->indent = (bool) $indent;
     }
+
+    //
+    // Serialization
+    //
 
     public function serialize(IDMEFMessage $message)
     {
@@ -37,7 +44,6 @@ class Xml extends AbstractSerializer
 
     protected function _serialize($node)
     {
-        $found = false;
         $classes = array_merge(array(get_class($node)), class_parents($node));
         $visited = array();
 
@@ -47,7 +53,6 @@ class Xml extends AbstractSerializer
             if (method_exists($this, $method)) {
                 call_user_func(array($this, $method), $node);
                 $visited[] = $cls;
-                $found = true;
             }
         }
 
@@ -55,9 +60,8 @@ class Xml extends AbstractSerializer
             $method = "depart$cls";
             if (method_exists($this, $method)) {
                 call_user_func(array($this, $method), $node);
-                $found = true;
             }
-            // Close the tag opened by the visit callback.
+            // Close the tag opened by the visitXXX callback.
             $this->out->endElement();
         }
 
@@ -330,10 +334,25 @@ class Xml extends AbstractSerializer
         $this->writeAttributes($node, 'category');
     }
 
-    protected function visitNtpStampType($node)
+    protected function visitCreateTime($node)
     {
-        $this->out->startElement($node->getParent()->__get($node));
+        $this->out->startElement('CreateTime');
         $this->out->writeAttribute($node, 'ntpstamp');
+        $this->out->text($node->getValue()->format(DateTimeType::FORMAT));
+    }
+
+    protected function visitDetectTime($node)
+    {
+        $this->out->startElement('DetectTime');
+        $this->out->writeAttribute($node, 'ntpstamp');
+        $this->out->text($node->getValue()->format(DateTimeType::FORMAT));
+    }
+
+    protected function visitAnalyzerTime($node)
+    {
+        $this->out->startElement('AnalyzerTime');
+        $this->out->writeAttribute($node, 'ntpstamp');
+        $this->out->text($node->getValue()->format(DateTimeType::FORMAT));
     }
 
     protected function visitConfidence($node)
@@ -368,7 +387,177 @@ class Xml extends AbstractSerializer
         }
     }
 
+    //
+    // Unserialization
+    //
+
     protected function _unserialize($serialized)
     {
+        $options = LIBXML_NONET | LIBXML_PARSEHUGE | LIBXML_HTML_NOIMPLIED |
+                   LIBXML_HTML_NODEFDTD | LIBXML_NOXMLDECL;
+        libxml_clear_errors();
+        $uie = libxml_use_internal_errors(true);
+        try {
+            $this->in = new \XMLReader();
+            $this->in->XML($serialized, null, $options);
+            try {
+                return $this->processDocument();
+            } finally {
+                $this->in->close();
+            }
+        } finally {
+            $errors = libxml_get_errors();
+            libxml_clear_errors();
+            libxml_use_internal_errors($uie);
+
+            if (count($errors)) {
+                XmlValidationErrors::raiseOnValidationErrors($errors);
+            }
+        }
+    }
+
+    protected function processDocument()
+    {
+        $rng = dirname(dirname(__DIR__)) .
+                DIRECTORY_SEPARATOR . 'data' .
+                DIRECTORY_SEPARATOR . 'IDMEF.rng';
+        $this->in->setRelaxNGSchema($rng);
+        $this->in->setParserProperty(\XMLReader::SUBST_ENTITIES, false);
+
+        $in = $this->in;
+        libxml_set_external_entity_loader(function ($public, $system, $context) use ($in) {
+            if ($public === "-//IETF//DTD IDMEF RFC 4765//EN") {
+                $in->setParserProperty(\XMLReader::VALIDATE, true);
+                $dtd = dirname(dirname(__DIR__)) .
+                        DIRECTORY_SEPARATOR . 'data' .
+                        DIRECTORY_SEPARATOR . 'IDMEF.dtd';
+                return fopen($dtd, 'r');
+            }
+            return null;
+        });
+
+        try {
+            return $this->iterateData();
+        } finally {
+            libxml_set_external_entity_loader(null);
+        }
+    }
+
+    protected function iterateData()
+    {
+        $value = null;
+        $xmlStack = array(new \fpoirotte\IDMEF\Classes\IDMEFMessage());
+        $successfulRead = $this->in->read();
+        while ($successfulRead !== false) {
+            switch ($this->in->nodeType) {
+                case \XMLReader::TEXT:
+                    $value = $this->in->value;
+                    break;
+
+                case \XMLReader::ELEMENT:
+                    $value = null;
+
+                    if ($this->in->namespaceURI !== self::XMLNS) {
+                        $successfulRead = $this->in->next();
+                        continue;
+                    }
+
+                    if ($this->in->localName === 'IDMEF-Message') {
+                        continue;
+                    }
+
+                    $current = $xmlStack[count($xmlStack) - 1];
+                    try {
+                        $current = $current->{$this->in->localName};
+                        if ($current instanceof AbstractClass) {
+                            $xmlStack[] = $current;
+                        }
+                    } catch (\InvalidArgumentException $e) {
+                        // Non-existent attribute or it refers to a type
+                        // which requires a value.
+                    }
+
+                    if ($current instanceof AbstractList) {
+                        $cls = "\\fpoirotte\\IDMEF\\Classes\\" . $this->in->localName;
+                        if (!class_exists($cls)) {
+                            $successfulRead = $this->in->next();
+                            continue;
+                        }
+
+                        $current[] = new $cls;
+                        $current = $current[-1];
+                        $xmlStack[] = $current;
+                    }
+
+                    $xmlns = $this->in->namespaceURI;
+                    if ($this->in->hasAttributes) {
+                        while ($this->in->moveToNextAttribute()) {
+                            $attrns = $this->in->namespaceURI === '' ? $xmlns : $this->in->namespaceURI;
+                            if ($attrns !== self::XMLNS) {
+                                continue;
+                            }
+
+                            $current->{$this->in->localName} = $this->in->value;
+                        }
+                        $this->in->moveToElement();
+                    }
+
+                    if (!$this->in->isEmptyElement) {
+                        break;
+                    }
+
+                    // Intentional fall-through
+
+                case \XMLReader::END_ELEMENT:
+                    $current = $xmlStack[count($xmlStack)-1];
+
+                    if ($value !== null) {
+                        $blacklist = array('CreateTime', 'DetectTime', 'AnalyzerTime');
+                        if (!in_array($this->in->localName, $blacklist, true)) {
+                            $adtypes = array(
+                                'boolean',
+                                'byte',
+                                'character',
+                                'date-time',
+                                'integer',
+                                'ntpstamp',
+                                'portlist',
+                                'real',
+                                'string',
+                                'byte-string',
+                                'xmltext',
+                            );
+
+                            if (in_array($this->in->localName, $adtypes, true)) {
+                                $attr   = str_replace(' ', '', ucwords(str_replace('-', ' ', $this->in->localName)));
+                                $cls    = "fpoirotte\\IDMEF\\Types\\${attr}Type";
+                                $value  = sprintf('C:%d:"%s":%d:{%s}', strlen($cls), $cls, strlen($value), $value);
+                                $value  = unserialize($value);
+                                $attr   = 'data';
+                            } else {
+                                $attr   = $this->in->localName;
+                            }
+
+                            $current->$attr = $value;
+                        }
+                        $value = null;
+                    }
+
+                    $cls = "\\fpoirotte\\IDMEF\\Classes\\" . $this->in->localName;
+                    if ($this->in->depth < count($xmlStack) &&
+                        $xmlStack[$this->in->depth] instanceof $cls) {
+                        array_pop($xmlStack);
+                    }
+
+                    break;
+            }
+
+            $successfulRead = $this->in->read();
+        }
+
+        if (count($xmlStack) !== 1) {
+            throw new \RuntimeException('Smashed stack');
+        }
+        return $xmlStack[0];
     }
 }
