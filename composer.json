@@ -23,6 +23,9 @@
         "ext-XMLReader": "*",
         "ext-XMLWriter": "*"
     },
+    "suggest": {
+        "ext-ffi": "Provides support for sending IDMEF alerts to Prelude SIEM"
+    },
     "require-dev": {
         "phpunit/phpunit": "*",
         "squizlabs/php_codesniffer": "*"
