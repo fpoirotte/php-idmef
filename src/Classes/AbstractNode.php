@@ -154,7 +154,7 @@ abstract class AbstractNode implements \IteratorAggregate
             if ($pathLen === 1 && strlen($pathParts[0]) > 2 &&
                 $pathParts[0][0] === '{' && substr($pathParts[0], -1) === '}') {
                 $isClass = true;
-                if (substr($pathParts[0], 1, -1) === get_class($this)) {
+                if (is_a(get_class($this), substr($pathParts[0], 1, -1), true)) {
                     $pathParts = $thisParts;
                     $pathLen   = count($pathParts);
                 }
