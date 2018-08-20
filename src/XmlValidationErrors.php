@@ -41,18 +41,18 @@ class XmlValidationErrors extends \Exception
         return $msg;
     }
 
-    static public function raiseOnValidationErrors(array $errors, $level = \LIBXML_ERR_WARNING)
+    public static function raiseOnValidationErrors(array $errors, $level = \LIBXML_ERR_WARNING)
     {
-            $lvl = \LIBXML_ERR_WARNING;
-            foreach ($errors as $error) {
-                if (!is_object($error) || !($error instanceof \libXMLError)) {
-                    throw new \InvalidArgumentException('Not validation errors');
-                }
-                $lvl = max($lvl, $error->level);
+        $lvl = \LIBXML_ERR_WARNING;
+        foreach ($errors as $error) {
+            if (!is_object($error) || !($error instanceof \libXMLError)) {
+                throw new \InvalidArgumentException('Not validation errors');
             }
+            $lvl = max($lvl, $error->level);
+        }
 
-            if ($lvl >= $level) {
-                throw new static($errors);
-            }
+        if ($lvl >= $level) {
+            throw new static($errors);
+        }
     }
 }

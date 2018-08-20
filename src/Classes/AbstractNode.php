@@ -38,15 +38,6 @@ abstract class AbstractNode implements \IteratorAggregate
         throw new \InvalidArgumentException($prop);
     }
 
-    public function isValid()
-    {
-        try {
-            
-        } finally {
-            
-        }
-    }
-
     public function acquireLock($mode = self::LOCK_EXCLUSIVE, $recursive = false)
     {
         if (!in_array($mode, array(self::LOCK_EXCLUSIVE, self::LOCK_SHARED))) {

@@ -125,8 +125,14 @@ class Xml extends AbstractSerializer
         $this->writeAttributes($node, 'messageid');
         $this->writeElements(
             $node,
-            'Analyzer', 'CreateTime', 'DetectTime', 'AnalyzerTime',
-            'Source', 'Target', 'Classification', 'Assessment'
+            'Analyzer',
+            'CreateTime',
+            'DetectTime',
+            'AnalyzerTime',
+            'Source',
+            'Target',
+            'Classification',
+            'Assessment'
         );
     }
 
@@ -136,8 +142,11 @@ class Xml extends AbstractSerializer
         $this->writeAttributes($node, 'messageid');
         $this->writeElements(
             $node,
-            'Analyzer', 'CreateTime', 'HeartbeatInterval',
-            'AnalyzerTime', 'AdditionalData'
+            'Analyzer',
+            'CreateTime',
+            'HeartbeatInterval',
+            'AnalyzerTime',
+            'AdditionalData'
         );
     }
 
@@ -175,8 +184,14 @@ class Xml extends AbstractSerializer
         $this->out->startElement('Analyzer');
         $this->writeAttributes(
             $node,
-            'analyzerid', 'name', 'manufacturer', 'model',
-            'version', 'class', 'ostype', 'osversion'
+            'analyzerid',
+            'name',
+            'manufacturer',
+            'model',
+            'version',
+            'class',
+            'ostype',
+            'osversion'
         );
         $this->writeElements($node, 'Node', 'Process', 'Analyzer');
     }
@@ -235,8 +250,16 @@ class Xml extends AbstractSerializer
         $this->writeAttributes($node, 'ident', 'category', 'fstype', 'file-type');
         $this->writeElements(
             $node,
-            'name', 'path', 'create-time', 'modify-time', 'access-time',
-            'data-size', 'disk-size', 'FileAccess', 'Linkage', 'Inode',
+            'name',
+            'path',
+            'create-time',
+            'modify-time',
+            'access-time',
+            'data-size',
+            'disk-size',
+            'FileAccess',
+            'Linkage',
+            'Inode',
             'Checksum'
         );
     }
@@ -259,8 +282,11 @@ class Xml extends AbstractSerializer
         $this->writeElements(
             $node,
             'change-time',
-            'number', 'major-device', 'minor-device',
-            'c-major-device', 'c-minor-device'
+            'number',
+            'major-device',
+            'minor-device',
+            'c-major-device',
+            'c-minor-device'
         );
     }
 
@@ -290,11 +316,19 @@ class Xml extends AbstractSerializer
         $this->out->startElement('Service');
         $this->writeAttributes(
             $node,
-            'ident', 'ip_version', 'iana_protocol_number', 'iana_protocol_name'
+            'ident',
+            'ip_version',
+            'iana_protocol_number',
+            'iana_protocol_name'
         );
         $this->writeElements(
             $node,
-            'name', 'port', 'portlist', 'protocol', 'SNMPService', 'WebService'
+            'name',
+            'port',
+            'portlist',
+            'protocol',
+            'SNMPService',
+            'WebService'
         );
     }
 
@@ -303,8 +337,14 @@ class Xml extends AbstractSerializer
         $this->out->startElement('SNMPService');
         $this->writeElements(
             $node,
-            'oid', 'messageProcessingModel', 'securityModel', 'securityName',
-            'securityLevel', 'contextName', 'contextEngineID', 'command'
+            'oid',
+            'messageProcessingModel',
+            'securityModel',
+            'securityName',
+            'securityLevel',
+            'contextName',
+            'contextEngineID',
+            'command'
         );
     }
 

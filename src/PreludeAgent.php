@@ -71,7 +71,7 @@ final class PreludeAgent
         throw new \RuntimeException('Cloning this class is prohibited');
     }
 
-    static private function adaptPath($path)
+    private static function adaptPath($path)
     {
         // Turn paths like "Alert.AdditionalData(0)" into a Prelude-compatible
         // path (eg. "alert.additional_data(0)")
