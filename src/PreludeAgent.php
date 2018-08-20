@@ -129,14 +129,15 @@ final class PreludeAgent
                 DIRECTORY_SEPARATOR . 'prelude.h'
             );
 
+            $binary = PHP_BINARY . "\0";
+            $agentOption = \FFI::own(\FFI::new('char [' . strlen($binary) . ']'), false);
+            register_shutdown_function('\\FFI::free', $agentOption);
+
             $optCount = \FFI::new('int [1]');
             $optCount[0] = 1;
             $agentOptions = \FFI::new('char *[1]');
-            $binary = PHP_BINARY . "\0";
-            $agentOption = \FFI::own(\FFI::new('char [' . strlen($binary) . ']'), false);
             \FFI::memcpy($agentOption, $binary, strlen($binary));
             $agentOptions[0] = $agentOption;
-            register_shutdown_function('\\FFI::free', $agentOption);
 
             if (self::$ffi->prelude_init($optCount, $agentOptions) < 0) {
                 throw new \InvalidArgumentException('Could not initialize Prelude');
