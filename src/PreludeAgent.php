@@ -12,7 +12,14 @@ use \fpoirotte\IDMEF\Classes\AbstractIDMEFMessage;
  *      $agent = PreludeAgent::create($profile_name);
  *      $agent->send($alert);
  *
- * See https://www.prelude-siem.org/projects/prelude/wiki/DevelAgentQuickly
+ * Note:
+ *      The profile name defaults to "php" if omitted.
+ *      Also, the profile must have been registered against
+ *      the Prelude SIEM manager with the "idmef:w" permission
+ *      before this class can be used.
+ *
+ * See https://www.prelude-siem.org/projects/prelude/wiki/DevelAgentQuickly and
+ * https://www.prelude-siem.org/projects/prelude/wiki/InstallingAgentRegistration
  * for more information.
  */
 final class PreludeAgent
