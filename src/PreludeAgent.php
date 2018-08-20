@@ -107,6 +107,7 @@ final class PreludeAgent
         }
 
         try {
+            $message->acquireLock($message::LOCK_SHARED, true);
             foreach ($message->getIterator('{' . AbstractType::class . '}', null, 0, -1) as $path => $value) {
                 $path = $this->adaptPath($path);
                 self::$ffi->idmef_message_set_string($idmef, $path, (string) $value);
@@ -114,6 +115,7 @@ final class PreludeAgent
 
             self::$ffi->prelude_client_send_idmef($this->client, $idmef);
         } finally {
+            $message->releaseLock($message::LOCK_SHARED, true);
             self::$ffi->idmef_message_destroy($idmef);
         }
     }
