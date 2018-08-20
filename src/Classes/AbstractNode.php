@@ -45,7 +45,7 @@ abstract class AbstractNode implements \IteratorAggregate
         }
 
         if ($mode === self::LOCK_EXCLUSIVE && $this->isLocked()) {
-            throw new LockException();
+            throw new LockException('Could not acquire exclusive lock');
         }
 
         $locked = array();
@@ -73,7 +73,7 @@ abstract class AbstractNode implements \IteratorAggregate
         }
 
         if (!$this->isLocked($mode)) {
-            throw new LockException();
+            throw new LockException('Cannot release unacquired lock');
         }
 
         if ($recursive) {
