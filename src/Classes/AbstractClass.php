@@ -27,20 +27,30 @@ abstract class AbstractClass extends AbstractNode
             throw new \InvalidArgumentException($prop);
         }
 
+        // If we have a perfect match, do not go any further.
         if (isset($this->_my_subclasses[$prop])) {
             return $prop;
         }
 
+        // Make sure we are dealing with potentially valid input.
         $mask = 'abcdefghijklmnopqrstuvwxyz-_ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         if (strspn($prop, $mask) !== strlen($prop)) {
             throw new \InvalidArgumentException($prop);
         }
 
-        $normProp = str_replace(array(' ', '-', '_'), '', ucwords($prop, ' -_'));
+        // Try to match "Foo_Bar" to an attribute named "foo-bar".
+        $normProp = str_replace('_', '-', strtolower($prop));
         if (isset($this->_my_subclasses[$normProp])) {
             return $normProp;
         }
 
+        // Try to match "foo_bar" or "foo-bar" to an attribute named "FooBar".
+        $normProp = str_replace(array('-', '_'), '', ucwords($prop, '-_'));
+        if (isset($this->_my_subclasses[$normProp])) {
+            return $normProp;
+        }
+
+        // Seems we're out of luck :(
         $cls = get_class($this);
         throw new \InvalidArgumentException("$cls has no attribute '$prop'");
     }
