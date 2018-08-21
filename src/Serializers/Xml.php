@@ -117,6 +117,9 @@ class Xml extends AbstractSerializer
     {
         $this->out->startElementNS(null, 'IDMEF-Message', 'http://iana.org/idmef');
         $this->out->writeAttribute('version', '1.0');
+        foreach ($node as $child) {
+            $this->_serialize($child);
+        }
     }
 
     protected function visitAlert($node)
@@ -377,22 +380,22 @@ class Xml extends AbstractSerializer
     protected function visitCreateTime($node)
     {
         $this->out->startElement('CreateTime');
-        $this->out->writeAttribute($node, 'ntpstamp');
-        $this->out->text($node->getValue()->format(DateTimeType::FORMAT));
+        $this->writeAttributes($node, 'ntpstamp');
+        $this->out->text($node->ntpstamp->getValue()->format(DateTimeType::FORMAT));
     }
 
     protected function visitDetectTime($node)
     {
         $this->out->startElement('DetectTime');
-        $this->out->writeAttribute($node, 'ntpstamp');
-        $this->out->text($node->getValue()->format(DateTimeType::FORMAT));
+        $this->writeAttributes($node, 'ntpstamp');
+        $this->out->text($node->ntpstamp->getValue()->format(DateTimeType::FORMAT));
     }
 
     protected function visitAnalyzerTime($node)
     {
         $this->out->startElement('AnalyzerTime');
-        $this->out->writeAttribute($node, 'ntpstamp');
-        $this->out->text($node->getValue()->format(DateTimeType::FORMAT));
+        $this->writeAttributes($node, 'ntpstamp');
+        $this->out->text($node->ntpstamp->getValue()->format(DateTimeType::FORMAT));
     }
 
     protected function visitConfidence($node)
