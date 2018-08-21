@@ -6,7 +6,7 @@ class NtpstampType extends AbstractType
 {
     const XML_TYPE = 'ntpstamp';
 
-    protected $ntpstamp;
+    protected $_ntpstamp;
 
     public function __construct($value)
     {
@@ -33,6 +33,11 @@ class NtpstampType extends AbstractType
         $this->unserialize($value);
     }
 
+    public function __toString()
+    {
+        return $this->_ntpstamp;
+    }
+
     public function unserialize($serialized)
     {
         $parts = explode('.', $serialized, 2);
@@ -43,6 +48,16 @@ class NtpstampType extends AbstractType
                 throw new \InvalidArgumentException($serialized);
             }
         }
-        $this->ntpstamp = $serialized;
+
+        if (sscanf(strtolower($serialized), '%X.%X', $integral, $fraction) !== 2) {
+            throw new \RuntimeException($serialized);
+        }
+
+        $fraction = $fraction * 100000 / 0x100000000;
+        $value = new \DateTime("1900-01-01T00:00:00.$fraction+00:00");
+        $value->add(new \DateInterval('PT' . $integral . 'S'));
+
+        $this->_value = \DateTimeImmutable::createFromMutable($value);
+        $this->_ntpstamp = $serialized;
     }
 }
