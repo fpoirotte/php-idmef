@@ -3,6 +3,7 @@
 namespace fpoirotte\IDMEF\Serializers;
 
 use \fpoirotte\IDMEF\Types\AbstractType;
+use \fpoirotte\IDMEF\Types\DateTimeType;
 use \fpoirotte\IDMEF\Classes\IDMEFMessage;
 use \fpoirotte\IDMEF\Classes\AbstractClass;
 use \fpoirotte\IDMEF\Classes\AbstractList;
@@ -110,7 +111,8 @@ class Xml extends AbstractSerializer
 
     protected function visitAbstractType($node)
     {
-        $this->out->writeElement($node::XML_TYPE, (string) $node);
+        $this->out->startElement($node::XML_TYPE);
+        $this->out->text((string) $node);
     }
 
     protected function visitIDMEFMessage($node)
