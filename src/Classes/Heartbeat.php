@@ -12,8 +12,8 @@ class Heartbeat extends AbstractIDMEFMessage
         'messageid'         => StringType::class,
         'Analyzer'          => Analyzer::class,
         'CreateTime'        => CreateTime::class,
-        'HeartbeatInterval' => StringType,
+        'HeartbeatInterval' => StringType::class,
         'AnalyzerTime'      => AnalyzerTime::class,
-        'AdditionalData'    => AdditionalData::class,
+        'AdditionalData'    => AdditionalDataList::class,
     );
 }
