@@ -19,6 +19,37 @@ abstract class AbstractNode implements \IteratorAggregate
     const LOCK_EXCLUSIVE = 0;
     const LOCK_SHARED = 1;
 
+    public function isValid()
+    {
+        $this->acquireLock(self::LOCK_SHARED, true);
+        try {
+            // Make sure mandatory attributes are indeed set.
+            foreach (static::$_mandatory as $mandatory) {
+                if (!isset($this->$mandatory)) {
+                    return false;
+                }
+
+                // If the attribute refers to a list, that means the list
+                // should contain at least one entry. Check that too.
+                if (($this->_children[$mandatory] instanceof AbstractList) &&
+                    !count($this->_children[$mandatory])) {
+                    return false;
+                }
+            }
+
+            // Finally, ask the children whether they are valid too.
+            foreach ($this->_children as $child) {
+                if (!$child->isValid()) {
+                    return false;
+                }
+            }
+
+            return true;
+        } finally {
+            $this->releaseLock(self::LOCK_SHARED, true);
+        }
+    }
+
     public function __get($prop)
     {
         throw new \InvalidArgumentException($prop);

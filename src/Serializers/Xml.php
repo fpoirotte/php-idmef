@@ -41,6 +41,10 @@ class Xml extends AbstractSerializer
         $this->out->startDocument('1.0', 'UTF-8');
         $message->acquireLock($message::LOCK_SHARED, true);
         try {
+            if (!$message->isValid()) {
+                throw new \InvalidArgumentException('Invalid IDMEF message');
+            }
+
             $this->_serialize($message);
         } finally {
             $message->releaseLock($message::LOCK_SHARED, true);

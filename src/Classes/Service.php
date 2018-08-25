@@ -20,4 +20,23 @@ class Service extends AbstractClass
         'SNMPService'           => SNMPService::class,
         'WebService'            => WebService::class,
     );
+
+    public function isValid()
+    {
+        $this->acquireLock(self::LOCK_SHARED, true);
+        try {
+            if (!parent::isValid()) {
+                return false;
+            }
+
+            $either = isset($this->_children['name']) || isset($this->_children['port']);
+            $portlist = isset($this->_children['portlist']);
+
+            // Either portlist must be defined, or one or both of name and port
+            // must be defined.
+            return $portlist ? (!$either) : $either;
+        } finally {
+            $this->releaseLock(self::LOCK_SHARED, true);
+        }
+    }
 }

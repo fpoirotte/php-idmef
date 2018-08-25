@@ -108,6 +108,10 @@ final class PreludeAgent
 
         try {
             $message->acquireLock($message::LOCK_SHARED, true);
+            if (!$message->isValid()) {
+                throw new \InvalidArgumentException('Invalid IDMEF message');
+            }
+
             try {
                 foreach ($message->getIterator('{' . AbstractType::class . '}', null, 0, -1) as $path => $value) {
                     $path = $this->adaptPath($path);

@@ -27,4 +27,28 @@ class Alert extends AbstractIDMEFMessage
         'CreateTime',
         'Classification',
     );
+
+    public function isValid()
+    {
+        $this->acquireLock(self::LOCK_SHARED, true);
+        try {
+            if (!parent::isValid()) {
+                return false;
+            }
+
+            // An alert can only have one type (basic Alert, Correlation Alert,
+            // Tool Alert or Overflow Alert).
+            $specialType = 0;
+            foreach (array('ToolAlert', 'CorrelationAlert', 'OverflowAlert') as $type) {
+                if (isset($this->_children[$type])) {
+                    $specialType++;
+                }
+            }
+
+            // A basic Alert does not have a special type.
+            return ($specialType <= 1);
+        } finally {
+            $this->releaseLock(self::LOCK_SHARED, true);
+        }
+    }
 }

@@ -14,4 +14,19 @@ class UserId extends AbstractClass
         'name'          => UserNameList::class,
         'number'        => UserNumberList::class,
     );
+
+    public function isValid()
+    {
+        $this->acquireLock(self::LOCK_SHARED, true);
+        try {
+            if (!parent::isValid()) {
+                return false;
+            }
+
+            // Either name or number (or both) must be defined.
+            return (isset($this->_children['name']) || isset($this->_children['number']));
+        } finally {
+            $this->releaseLock(self::LOCK_SHARED, true);
+        }
+    }
 }
