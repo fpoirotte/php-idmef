@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<IDMEF-Message version="1.0" xmlns="http://iana.org/idmef">
+  <Alert messageid="abc123456789">
+    <Analyzer analyzerid="bc-corr-01">
+      <Node category="dns">
+        <name>correlator01.example.com</name>
+      </Node>
+    </Analyzer>
+    <CreateTime ntpstamp="0xbc72423b.0x00000000">2000-03-09T15:31:07.000000+00:00</CreateTime>
+    <Source ident="a1">
+      <Node ident="a1-1">
+        <Address ident="a1-2" category="ipv4-addr">
+          <address>192.0.2.200</address>
+        </Address>
+      </Node>
+    </Source>
+    <Target ident="a2">
+      <Node ident="a2-1" category="dns">
+        <name>www.example.com</name>
+        <Address ident="a2-2" category="ipv4-addr">
+          <address>192.0.2.50</address>
+        </Address>
+      </Node>
+      <Service ident="a2-3">
+        <portlist>5-25,37,42,43,53,69-119,123-514</portlist>
+      </Service>
+    </Target>
+    <Classification text="Portscan">
+      <Reference origin="vendor-specific">
+        <name>portscan</name>
+        <url>http://www.vendor.com/portscan</url>
+      </Reference>
+    </Classification>
+    <CorrelationAlert>
+      <name>multiple ports in short time</name>
+      <alertident>123456781</alertident>
+      <alertident>123456782</alertident>
+      <alertident>123456783</alertident>
+      <alertident>123456784</alertident>
+      <alertident>123456785</alertident>
+      <alertident>123456786</alertident>
+      <alertident analyzerid="a1b2c3d4">987654321</alertident>
+      <alertident analyzerid="a1b2c3d4">987654322</alertident>
+    </CorrelationAlert>
+  </Alert>
+</IDMEF-Message>
