@@ -4,7 +4,6 @@ namespace fpoirotte\IDMEF\Classes;
 
 use \fpoirotte\IDMEF\Types\Enums\UserCategoryEnum;
 use \fpoirotte\IDMEF\Types\StringType;
-use \fpoirotte\IDMEF\Classes\UserIdList;
 
 class User extends AbstractClass
 {

@@ -4,7 +4,6 @@ namespace fpoirotte\IDMEF\Classes;
 
 use \fpoirotte\IDMEF\Types\Enums\LinkageCategoryEnum;
 use \fpoirotte\IDMEF\Types\StringType;
-use \fpoirotte\IDMEF\Classes\File;
 
 class Linkage extends AbstractClass
 {

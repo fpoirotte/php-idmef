@@ -3,7 +3,6 @@
 namespace fpoirotte\IDMEF\Classes;
 
 use \fpoirotte\IDMEF\Types\StringType;
-use \fpoirotte\IDMEF\Classes\ReferenceList;
 
 class Classification extends AbstractClass
 {

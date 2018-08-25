@@ -2,10 +2,6 @@
 
 namespace fpoirotte\IDMEF\Classes;
 
-use \fpoirotte\IDMEF\Classes\Impact;
-use \fpoirotte\IDMEF\Classes\ActionList;
-use \fpoirotte\IDMEF\Classes\Confidence;
-
 class Assessment extends AbstractClass
 {
     protected static $_subclasses = array(

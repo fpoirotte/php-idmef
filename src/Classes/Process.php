@@ -4,8 +4,6 @@ namespace fpoirotte\IDMEF\Classes;
 
 use \fpoirotte\IDMEF\Types\StringType;
 use \fpoirotte\IDMEF\Types\IntegerType;
-use \fpoirotte\IDMEF\Classes\ArgumentList;
-use \fpoirotte\IDMEF\Classes\EnvironmentList;
 
 class Process extends AbstractClass
 {

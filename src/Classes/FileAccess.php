@@ -2,9 +2,6 @@
 
 namespace fpoirotte\IDMEF\Classes;
 
-use \fpoirotte\IDMEF\Classes\UserId;
-use \fpoirotte\IDMEF\Classes\PermissionList;
-
 class FileAccess extends AbstractClass
 {
     protected static $_subclasses = array(

@@ -7,10 +7,6 @@ use \fpoirotte\IDMEF\Types\Enums\FsTypeEnum;
 use \fpoirotte\IDMEF\Types\StringType;
 use \fpoirotte\IDMEF\Types\IntegerType;
 use \fpoirotte\IDMEF\Types\DateTimeType;
-use \fpoirotte\IDMEF\Classes\FileAccessList;
-use \fpoirotte\IDMEF\Classes\LinkageList;
-use \fpoirotte\IDMEF\Classes\Inode;
-use \fpoirotte\IDMEF\Classes\ChecksumList;
 
 class File extends AbstractClass
 {

@@ -3,8 +3,6 @@
 namespace fpoirotte\IDMEF\Classes;
 
 use \fpoirotte\IDMEF\Types\StringType;
-use \fpoirotte\IDMEF\Classes\Node;
-use \fpoirotte\IDMEF\Classes\Process;
 
 class Analyzer extends AbstractClass
 {

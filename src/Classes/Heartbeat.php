@@ -3,8 +3,6 @@
 namespace fpoirotte\IDMEF\Classes;
 
 use \fpoirotte\IDMEF\Types\StringType;
-use \fpoirotte\IDMEF\Classes\Analyzer;
-use \fpoirotte\IDMEF\Classes\AdditionalDataList;
 
 class Heartbeat extends AbstractIDMEFMessage
 {

@@ -3,7 +3,6 @@
 namespace fpoirotte\IDMEF\Classes;
 
 use \fpoirotte\IDMEF\Types\StringType;
-use \fpoirotte\IDMEF\Classes\ArgumentList;
 
 class WebService extends AbstractClass
 {
