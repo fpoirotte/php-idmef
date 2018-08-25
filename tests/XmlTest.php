@@ -88,41 +88,48 @@ class XmlTest extends TestCase
         $this->correlated->correlation_alert->alertident[-1]->analyzerid = 'a1b2c3d4';
     }
 
+    protected function checkXmlSerialization($testfile, $message)
+    {
+        $wrapper    = new IDMEFMessage;
+        $wrapper[]  = $message;
+        $testdata   = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'testdata' . DIRECTORY_SEPARATOR . $testfile);
+        $serializer = new Xml(true);
+        $this->assertSame($testdata, $serializer->serialize($wrapper));
+    }
+
+    public function checkXmlUnserialization($testfile, $expected)
+    {
+        $testdata       = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'testdata' . DIRECTORY_SEPARATOR . $testfile);
+        $serializer     = new Xml(true);
+        $idmefmessage   = $serializer->unserialize($testdata);
+        $this->assertSame(1, count($idmefmessage));
+
+        // We only check that the leaf nodes' values match our expectations.
+        $message    = $idmefmessage[0];
+        $actual     = array();
+        foreach ($message->getIterator('{' . AbstractType::class . '}', null, 0, -1) as $path => $value) {
+            $actual[$path] = (string) $value;
+        }
+        $this->assertSame($expected, $actual);
+    }
+
     public function testHeartbeatXmlSerialization()
     {
-        $message    = new IDMEFMessage;
-        $message[]  = $this->heartbeat;
-        $testdata   = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'testdata' . DIRECTORY_SEPARATOR . 'heartbeat.xml');
-        $serializer = new Xml(true);
-        $this->assertSame($testdata, $serializer->serialize($message));
+        $this->checkXmlSerialization('heartbeat.xml', $this->heartbeat);
     }
 
     public function testAlertXmlSerialization()
     {
-        $message    = new IDMEFMessage;
-        $message[]  = $this->alert;
-        $testdata   = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'testdata' . DIRECTORY_SEPARATOR . 'teardrop.xml');
-        $serializer = new Xml(true);
-        $this->assertSame($testdata, $serializer->serialize($message));
+        $this->checkXmlSerialization('teardrop.xml', $this->alert);
     }
 
     public function testCorrelationAlertXmlSerialization()
     {
-        $message    = new IDMEFMessage;
-        $message[]  = $this->correlated;
-        $testdata   = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'testdata' . DIRECTORY_SEPARATOR . 'correlationalert.xml');
-        $serializer = new Xml(true);
-        $this->assertSame($testdata, $serializer->serialize($message));
+        $this->checkXmlSerialization('correlationalert.xml', $this->correlated);
     }
 
     public function testHeartbeatXmlUnserialization()
     {
-        $testdata   = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'testdata' . DIRECTORY_SEPARATOR . 'heartbeat.xml');
-        $serializer = new Xml(true);
-        $idmefmessage = $serializer->unserialize($testdata);
-        $this->assertSame(1, count($idmefmessage));
-        $heartbeat = $idmefmessage[0];
-
         $expected = array(
             'Heartbeat.messageid'                   => 'abc123456789',
             'Heartbeat.Analyzer.analyzerid'         => 'hq-dmz-analyzer01',
@@ -137,11 +144,77 @@ class XmlTest extends TestCase
             'Heartbeat.AdditionalData(1).meaning'   => '%diskused',
             'Heartbeat.AdditionalData(1).data'      => '87.1',
         );
+        $this->checkXmlUnserialization('heartbeat.xml', $expected);
+    }
 
-        $actual = array();
-        foreach ($heartbeat->getIterator('{' . AbstractType::class . '}', null, 0, -1) as $path => $value) {
-            $actual[$path] = (string) $value;
-        }
-        $this->assertSame($expected, $actual);
+    public function testAlertXmlUnserialization()
+    {
+        $expected = array(
+            'Alert.messageid'                           => 'abc123456789',
+            'Alert.Analyzer.analyzerid'                 => 'hq-dmz-analyzer01',
+            'Alert.Analyzer.Node.category'              => 'dns',
+            'Alert.Analyzer.Node.location'              => 'Headquarters DMZ Network',
+            'Alert.Analyzer.Node.name'                  => 'analyzer01.example.com',
+            'Alert.CreateTime.ntpstamp'                 => '0xbc722ebe.0x00000000',
+            'Alert.Source(0).ident'                     => 'a1b2c3d4',
+            'Alert.Source(0).Node.ident'                => 'a1b2c3d4-001',
+            'Alert.Source(0).Node.category'             => 'dns',
+            'Alert.Source(0).Node.name'                 => 'badguy.example.net',
+            'Alert.Source(0).Node.Address(0).ident'     => 'a1b2c3d4-002',
+            'Alert.Source(0).Node.Address(0).category'  => 'ipv4-net-mask',
+            'Alert.Source(0).Node.Address(0).address'   => '192.0.2.50',
+            'Alert.Source(0).Node.Address(0).netmask'   => '255.255.255.255',
+            'Alert.Target(0).ident'                     => 'd1c2b3a4',
+            'Alert.Target(0).Node.ident'                => 'd1c2b3a4-001',
+            'Alert.Target(0).Node.category'             => 'dns',
+            'Alert.Target(0).Node.Address(0).category'  => 'ipv4-addr-hex',
+            'Alert.Target(0).Node.Address(0).address'   => '0xde796f70',
+            'Alert.Classification.text'                 => 'Teardrop detected',
+            'Alert.Classification.Reference(0).origin'  => 'bugtraqid',
+            'Alert.Classification.Reference(0).name'    => '124',
+            'Alert.Classification.Reference(0).url'     => 'http://www.securityfocus.com/bid/124',
+        );
+        $this->checkXmlUnserialization('teardrop.xml', $expected);
+    }
+
+    public function testCorrelationAlertXmlUnserialization()
+    {
+        $expected = array(
+            'Alert.messageid'                                   => 'abc123456789',
+            'Alert.Analyzer.analyzerid'                         => 'bc-corr-01',
+            'Alert.Analyzer.Node.category'                      => 'dns',
+            'Alert.Analyzer.Node.name'                          => 'correlator01.example.com',
+            'Alert.CreateTime.ntpstamp'                         => '0xbc72423b.0x00000000',
+            'Alert.Source(0).ident'                             => 'a1',
+            'Alert.Source(0).Node.ident'                        => 'a1-1',
+            'Alert.Source(0).Node.Address(0).ident'             => 'a1-2',
+            'Alert.Source(0).Node.Address(0).category'          => 'ipv4-addr',
+            'Alert.Source(0).Node.Address(0).address'           => '192.0.2.200',
+            'Alert.Target(0).ident'                             => 'a2',
+            'Alert.Target(0).Node.ident'                        => 'a2-1',
+            'Alert.Target(0).Node.category'                     => 'dns',
+            'Alert.Target(0).Node.name'                         => 'www.example.com',
+            'Alert.Target(0).Node.Address(0).ident'             => 'a2-2',
+            'Alert.Target(0).Node.Address(0).category'          => 'ipv4-addr',
+            'Alert.Target(0).Node.Address(0).address'           => '192.0.2.50',
+            'Alert.Target(0).Service.ident'                     => 'a2-3',
+            'Alert.Target(0).Service.portlist'                  => '5-25,37,42,43,53,69-119,123-514',
+            'Alert.Classification.text'                         => 'Portscan',
+            'Alert.Classification.Reference(0).origin'          => 'vendor-specific',
+            'Alert.Classification.Reference(0).name'            => 'portscan',
+            'Alert.Classification.Reference(0).url'             => 'http://www.vendor.com/portscan',
+            'Alert.CorrelationAlert.name'                       => 'multiple ports in short time',
+            'Alert.CorrelationAlert.AlertIdent(0).alertident'   => '123456781',
+            'Alert.CorrelationAlert.AlertIdent(1).alertident'   => '123456782',
+            'Alert.CorrelationAlert.AlertIdent(2).alertident'   => '123456783',
+            'Alert.CorrelationAlert.AlertIdent(3).alertident'   => '123456784',
+            'Alert.CorrelationAlert.AlertIdent(4).alertident'   => '123456785',
+            'Alert.CorrelationAlert.AlertIdent(5).alertident'   => '123456786',
+            'Alert.CorrelationAlert.AlertIdent(6).analyzerid'   => 'a1b2c3d4',
+            'Alert.CorrelationAlert.AlertIdent(6).alertident'   => '987654321',
+            'Alert.CorrelationAlert.AlertIdent(7).analyzerid'   => 'a1b2c3d4',
+            'Alert.CorrelationAlert.AlertIdent(7).alertident'   => '987654322',
+        );
+        $this->checkXmlUnserialization('correlationalert.xml', $expected);
     }
 }
