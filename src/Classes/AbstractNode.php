@@ -45,7 +45,9 @@ abstract class AbstractNode implements \IteratorAggregate
         }
 
         if ($mode === self::LOCK_EXCLUSIVE && $this->isLocked()) {
-            throw new LockException('Could not acquire exclusive lock');
+            throw new LockException('Another piece of code already acquired the lock');
+        } elseif ($mode === self::LOCK_SHARED && $this->isLocked(self::LOCK_EXCLUSIVE)) {
+            throw new LockException('Another piece of code already acquired the lock');
         }
 
         $locked = array();
