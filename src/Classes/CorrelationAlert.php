@@ -3,15 +3,11 @@
 namespace fpoirotte\IDMEF\Classes;
 
 use \fpoirotte\IDMEF\Types\StringType;
-use \fpoirotte\IDMEF\Classes\AlertIdentList;
 
-class CorrelationAlert extends Alert
+class CorrelationAlert extends AbstractClass
 {
     protected static $_subclasses = array(
         'name'              => StringType::class,
-        // FIXME: "alertident" is defined as both a class and an attribute
-        // in RFC 4765, which is not really practical.
-        // Therefore, we chose to rename it and use it like a class.
-        'alerts'            => AlertIdentList::class,
+        'alertident'        => AlertIdentList::class,
     );
 }

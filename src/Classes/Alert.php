@@ -16,6 +16,9 @@ class Alert extends AbstractIDMEFMessage
         'Target'            => TargetList::class,
         'Classification'    => Classification::class,
         'Assessment'        => Assessment::class,
+        'ToolAlert'         => ToolAlert::class,
+        'OverflowAlert'     => OverflowAlert::class,
+        'CorrelationAlert'  => CorrelationAlert::class,
         'AdditionalData'    => AdditionalDataList::class,
     );
 }
