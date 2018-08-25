@@ -7,6 +7,7 @@ use \fpoirotte\IDMEF\Types\DateTimeType;
 use \fpoirotte\IDMEF\Classes\IDMEFMessage;
 use \fpoirotte\IDMEF\Classes\AbstractClass;
 use \fpoirotte\IDMEF\Classes\AbstractList;
+use \fpoirotte\IDMEF\Classes\AdditionalData;
 
 /**
  * Abstract class representing an IDMEF type.
@@ -568,14 +569,16 @@ class Xml extends AbstractSerializer
                                 'xmltext',
                             );
 
+                            $attr   = $this->in->localName;
                             if (in_array($this->in->localName, $adtypes, true)) {
                                 $attr   = str_replace(' ', '', ucwords(str_replace('-', ' ', $this->in->localName)));
                                 $cls    = "fpoirotte\\IDMEF\\Types\\${attr}Type";
                                 $value  = sprintf('C:%d:"%s":%d:{%s}', strlen($cls), $cls, strlen($value), $value);
                                 $value  = unserialize($value);
-                                $attr   = 'data';
-                            } else {
-                                $attr   = $this->in->localName;
+
+                                if ($current instanceof AdditionalData) {
+                                    $attr   = 'data';
+                                }
                             }
 
                             $current->$attr = $value;
