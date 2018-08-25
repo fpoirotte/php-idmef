@@ -142,7 +142,11 @@ class Xml extends AbstractSerializer
             'Source',
             'Target',
             'Classification',
-            'Assessment'
+            'Assessment',
+            'ToolAlert',
+            'OverflowAlert',
+            'CorrelationAlert',
+            'AdditionalData'
         );
     }
 
@@ -164,8 +168,7 @@ class Xml extends AbstractSerializer
     {
         $this->out->startElement('CorrelationAlert');
         $this->writeAttributes($node, 'name');
-        // FIXME: "alerts" (alertident)
-        $this->writeElements($node, 'alerts');
+        $this->writeElements($node, 'alertident');
     }
 
     protected function visitOverflowAlert($node)
@@ -178,8 +181,7 @@ class Xml extends AbstractSerializer
     {
         $this->out->startElement('ToolAlert');
         $this->writeAttributes($node, 'name', 'command');
-        // FIXME: "alerts" (alertident)
-        $this->writeElements($node, 'alerts');
+        $this->writeElements($node, 'alertident');
     }
 
     protected function visitAdditionalData($node)
@@ -423,22 +425,6 @@ class Xml extends AbstractSerializer
         $this->writeAttributes($node, 'analyzerid');
         if (isset($node->ident)) {
             $this->out->text($node->ident);
-        }
-    }
-
-    protected function departAlert($node)
-    {
-        // This is done here so that classes that inherit from Alert
-        // (namely OverflowAlert, ToolAlert, CorrelationAlert) can
-        // add their own attributes before the additional data.
-        // See the DTD in section 8 of RFC 4765 for more information.
-
-        // Also, we test whether the attribute is actually set
-        // prior to doing anything to prevent lock reentry.
-        if (isset($node->AdditionalData)) {
-            foreach ($node->AdditionalData as $child) {
-                $this->visitAdditionalData($child);
-            }
         }
     }
 
