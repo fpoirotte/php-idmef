@@ -28,7 +28,12 @@ abstract class AbstractList extends AbstractNode implements \ArrayAccess, \Itera
 
     public function offsetExists($offset)
     {
-        return isset($this->_children[$offset]);
+        try {
+            $this->_validateOffset($offset);
+        } catch (\InvalidArgumentException $e) {
+            return false;
+        }
+        return ($offset !== null);
     }
 
     public function offsetGet($offset)
