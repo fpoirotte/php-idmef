@@ -9,18 +9,6 @@ use \fpoirotte\IDMEF\LockException;
  */
 abstract class AbstractClass extends AbstractNode
 {
-    protected $_my_subclasses = array();
-
-    public function __construct()
-    {
-        $subclasses = array();
-        foreach (array_reverse(class_parents($this)) as $ancestor) {
-            $subclasses[] = $ancestor::$_subclasses;
-        }
-        $subclasses[] = static::$_subclasses;
-        $this->_my_subclasses = call_user_func_array('array_merge', $subclasses);
-    }
-
     protected function _normalizeProperty($prop)
     {
         if (!is_string($prop)) {
@@ -28,7 +16,7 @@ abstract class AbstractClass extends AbstractNode
         }
 
         // If we have a perfect match, do not go any further.
-        if (isset($this->_my_subclasses[$prop])) {
+        if (isset(static::$_subclasses[$prop])) {
             return $prop;
         }
 
@@ -40,13 +28,13 @@ abstract class AbstractClass extends AbstractNode
 
         // Try to match "Foo_Bar" to an attribute named "foo-bar".
         $normProp = str_replace('_', '-', strtolower($prop));
-        if (isset($this->_my_subclasses[$normProp])) {
+        if (isset(static::$_subclasses[$normProp])) {
             return $normProp;
         }
 
         // Try to match "foo_bar" or "foo-bar" to an attribute named "FooBar".
         $normProp = str_replace(array('-', '_'), '', ucwords($prop, '-_'));
-        if (isset($this->_my_subclasses[$normProp])) {
+        if (isset(static::$_subclasses[$normProp])) {
             return $normProp;
         }
 
@@ -67,7 +55,7 @@ abstract class AbstractClass extends AbstractNode
             return $this->_children[$prop];
         }
 
-        $type = $this->_my_subclasses[$prop];
+        $type = static::$_subclasses[$prop];
         if (is_a($type, AbstractClass::class, true) ||
             is_a($type, AbstractList::class, true)) {
             $this->acquireLock(self::LOCK_EXCLUSIVE);
@@ -86,7 +74,7 @@ abstract class AbstractClass extends AbstractNode
     public function __set($prop, $value)
     {
         $prop = $this->_normalizeProperty($prop);
-        $type = $this->_my_subclasses[$prop];
+        $type = static::$_subclasses[$prop];
 
         if (!is_object($value)) {
             if (is_a($type, AbstractClass::class, true) ||
