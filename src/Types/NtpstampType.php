@@ -17,6 +17,7 @@ class NtpstampType extends AbstractType
             // We do not rely on $diff's days/h/m/s fields because
             // \DateInterval does not handle leap seconds correctly.
             $integral = $value->getTimestamp() - $ntpEpoch->getTimestamp();
+            $integral &= 0xFFFFFFFF;
 
             // Convert microseconds into a fraction of 2**32.
             $fraction = (int) ($diff->f / (1000000 / (1 << 32)));
@@ -43,18 +44,19 @@ class NtpstampType extends AbstractType
         $parts = explode('.', $serialized, 2);
         foreach ($parts as &$part) {
             if (strlen($part) != 10 || substr($part, 0, 2) !== '0x' ||
-                strspn($part, '1234567890abcdefABCDEF', 2) !== 8 ||
-                sscanf($part, '%i', $part) !== 1) {
+                strspn($part, '1234567890abcdefABCDEF', 2) !== 8) {
                 throw new \InvalidArgumentException($serialized);
             }
         }
 
-        if (sscanf(strtolower($serialized), '%X.%X', $integral, $fraction) !== 2) {
-            throw new \RuntimeException($serialized);
+        if (sscanf(strtolower($serialized), '%x.%x', $integral, $fraction) !== 2) {
+            throw new \InvalidArgumentException($serialized);
         }
 
+        // See section 6.4 of RFC 4765 for an explanation of why this is needed.
+        $epoch = ($integral & 0x80000000) ? "1900-01-01T00:00:00" : "2036-02-07T06:28:16";
         $fraction = $fraction * 100000 / 0x100000000;
-        $value = new \DateTime("1900-01-01T00:00:00.$fraction+00:00");
+        $value = new \DateTime("$epoch.$fraction+00:00");
         $value->add(new \DateInterval('PT' . $integral . 'S'));
 
         $this->_value = \DateTimeImmutable::createFromMutable($value);
