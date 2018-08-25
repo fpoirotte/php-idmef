@@ -72,9 +72,9 @@ class XmlTest extends TestCase
         $this->correlated->target[-1]->service->ident = 'a2-3';
         $this->correlated->target[-1]->service->portlist = '5-25,37,42,43,53,69-119,123-514';
         $this->correlated->classification->text = 'Portscan';
-        $this->correlated->classification->reference->origin = 'vendor-specific';
-        $this->correlated->classification->reference->name = 'portscan';
-        $this->correlated->classification->reference->url = 'http://www.vendor.com/portscan';
+        $this->correlated->classification->reference[  ]->origin = 'vendor-specific';
+        $this->correlated->classification->reference[-1]->name = 'portscan';
+        $this->correlated->classification->reference[-1]->url = 'http://www.vendor.com/portscan';
         $this->correlated->correlation_alert->name = 'multiple ports in short time';
         $this->correlated->correlation_alert->alertident[  ] = '123456781';
         $this->correlated->correlation_alert->alertident[  ] = '123456782';
