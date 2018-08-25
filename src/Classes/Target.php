@@ -15,6 +15,6 @@ class Target extends AbstractClass
         'User'          => User::class,
         'Process'       => Process::class,
         'Service'       => Service::class,
-        'File'          => File::class,
+        'File'          => FileList::class,
     );
 }
