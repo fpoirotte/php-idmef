@@ -167,8 +167,7 @@ class Xml extends AbstractSerializer
     protected function visitCorrelationAlert($node)
     {
         $this->out->startElement('CorrelationAlert');
-        $this->writeAttributes($node, 'name');
-        $this->writeElements($node, 'alertident');
+        $this->writeElements($node, 'name', 'alertident');
     }
 
     protected function visitOverflowAlert($node)
@@ -419,12 +418,12 @@ class Xml extends AbstractSerializer
         $this->writeAttributes($node, 'severity', 'completion', 'type');
     }
 
-    protected function visitAlertIdentList($node)
+    protected function visitAlertIdent($node)
     {
         $this->out->startElement('alertident');
         $this->writeAttributes($node, 'analyzerid');
-        if (isset($node->ident)) {
-            $this->out->text($node->ident);
+        if (isset($node->alertident)) {
+            $this->out->text($node->alertident);
         }
     }
 

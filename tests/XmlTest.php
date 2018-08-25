@@ -76,15 +76,15 @@ class XmlTest extends TestCase
         $this->correlated->classification->reference[-1]->name = 'portscan';
         $this->correlated->classification->reference[-1]->url = 'http://www.vendor.com/portscan';
         $this->correlated->correlation_alert->name = 'multiple ports in short time';
-        $this->correlated->correlation_alert->alertident[  ] = '123456781';
-        $this->correlated->correlation_alert->alertident[  ] = '123456782';
-        $this->correlated->correlation_alert->alertident[  ] = '123456783';
-        $this->correlated->correlation_alert->alertident[  ] = '123456784';
-        $this->correlated->correlation_alert->alertident[  ] = '123456785';
-        $this->correlated->correlation_alert->alertident[  ] = '123456786';
-        $this->correlated->correlation_alert->alertident[  ] = '987654321';
+        $this->correlated->correlation_alert->alertident[  ]->alertident = '123456781';
+        $this->correlated->correlation_alert->alertident[  ]->alertident = '123456782';
+        $this->correlated->correlation_alert->alertident[  ]->alertident = '123456783';
+        $this->correlated->correlation_alert->alertident[  ]->alertident = '123456784';
+        $this->correlated->correlation_alert->alertident[  ]->alertident = '123456785';
+        $this->correlated->correlation_alert->alertident[  ]->alertident = '123456786';
+        $this->correlated->correlation_alert->alertident[  ]->alertident = '987654321';
         $this->correlated->correlation_alert->alertident[-1]->analyzerid = 'a1b2c3d4';
-        $this->correlated->correlation_alert->alertident[  ] = '987654322';
+        $this->correlated->correlation_alert->alertident[  ]->alertident = '987654322';
         $this->correlated->correlation_alert->alertident[-1]->analyzerid = 'a1b2c3d4';
     }
 
