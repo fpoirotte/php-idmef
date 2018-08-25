@@ -5,7 +5,7 @@ namespace fpoirotte\IDMEF\Classes;
 use \fpoirotte\IDMEF\Types\StringType;
 use \fpoirotte\IDMEF\Classes\ArgumentList;
 
-class WebService extends Service
+class WebService extends AbstractClass
 {
     protected static $_subclasses = array(
         'url'           => StringType::class,

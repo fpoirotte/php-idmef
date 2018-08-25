@@ -5,7 +5,7 @@ namespace fpoirotte\IDMEF\Classes;
 use \fpoirotte\IDMEF\Types\StringType;
 use \fpoirotte\IDMEF\Types\IntegerType;
 
-class SNMPService extends Service
+class SNMPService extends AbstractClass
 {
     protected static $_subclasses = array(
         'oid'                       => StringType::class,

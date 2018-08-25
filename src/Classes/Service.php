@@ -17,5 +17,7 @@ class Service extends AbstractClass
         'port'                  => IntegerType::class,
         'portlist'              => PortListType::class,
         'protocol'              => StringType::class,
+        'SNMPService'           => SNMPService::class,
+        'WebService'            => WebService::class,
     );
 }
