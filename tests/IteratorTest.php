@@ -118,4 +118,14 @@ class IteratorTest extends TestCase
         );
         $this->checkResults($it, $expected);
     }
+
+    public function testValueBasedIteration()
+    {
+        $it = $this->alert->getIterator(null, 'here', 0, -1);
+        $expected = array(
+            'Alert.Analyzer.Node.location'          => $this->alert->analyzer->node->location,
+            'Alert.Analyzer.Analyzer.Node.location' => $this->alert->analyzer->analyzer->node->location,
+        );
+        $this->checkResults($it, $expected);
+    }
 }
