@@ -16,4 +16,8 @@ class Address extends AbstractClass
         'address'       => StringType::class,
         'netmask'       => StringType::class,
     );
+
+    protected static $_mandatory = array(
+        'address',
+    );
 }

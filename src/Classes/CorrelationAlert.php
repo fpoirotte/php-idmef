@@ -10,4 +10,9 @@ class CorrelationAlert extends AbstractClass
         'name'              => StringType::class,
         'alertident'        => AlertIdentList::class,
     );
+
+    protected static $_mandatory = array(
+        'name',
+        'alertident',
+    );
 }

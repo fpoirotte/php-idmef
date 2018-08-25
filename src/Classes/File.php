@@ -31,4 +31,10 @@ class File extends AbstractClass
         'Inode'         => Inode::class,
         'Checksum'      => ChecksumList::class,
     );
+
+    protected static $_mandatory = array(
+        'name',
+        'path',
+        'category',
+    );
 }

@@ -11,4 +11,9 @@ class FileAccess extends AbstractClass
         'UserId'        => UserId::class,
         'Permission'    => PermissionList::class,
     );
+
+    protected static $_mandatory = array(
+        'UserId',
+        'Permission',
+    );
 }

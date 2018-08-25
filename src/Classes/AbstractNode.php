@@ -11,6 +11,7 @@ use \fpoirotte\IDMEF\LockException;
 abstract class AbstractNode implements \IteratorAggregate
 {
     protected static $_subclasses = array();
+    protected static $_mandatory = array();
     protected $_parent = null;
     protected $_children = array();
     protected $_locks = array(0, 0);

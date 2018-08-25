@@ -11,4 +11,9 @@ class ToolAlert extends AbstractClass
         'command'           => StringType::class,
         'alertident'        => AlertIdentList::class,
     );
+
+    protected static $_mandatory = array(
+        'name',
+        'alertident',
+    );
 }

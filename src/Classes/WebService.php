@@ -13,4 +13,8 @@ class WebService extends AbstractClass
         'http-method'   => StringType::class,
         'arg'           => ArgumentList::class,
     );
+
+    protected static $_mandatory = array(
+        'url',
+    );
 }

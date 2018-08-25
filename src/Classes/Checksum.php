@@ -12,4 +12,9 @@ class Checksum extends AbstractClass
         'value'         => StringType::class,
         'key'           => StringType::class,
     );
+
+    protected static $_mandatory = array(
+        'algorithm',
+        'value',
+    );
 }

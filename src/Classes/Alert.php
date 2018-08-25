@@ -21,4 +21,10 @@ class Alert extends AbstractIDMEFMessage
         'CorrelationAlert'  => CorrelationAlert::class,
         'AdditionalData'    => AdditionalDataList::class,
     );
+
+    protected static $_mandatory = array(
+        'Analyzer',
+        'CreateTime',
+        'Classification',
+    );
 }

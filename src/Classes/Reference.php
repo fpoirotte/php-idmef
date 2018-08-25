@@ -13,4 +13,9 @@ class Reference extends AbstractClass
         'name'          => StringType::class,
         'url'           => StringType::class,
     );
+
+    protected static $_mandatory = array(
+        'name',
+        'url',
+    );
 }

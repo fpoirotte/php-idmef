@@ -13,4 +13,8 @@ class OverflowAlert extends AbstractClass
         'size'              => IntegerType::class,
         'buffer'            => ByteStringType::class,
     );
+
+    protected static $_mandatory = array(
+        'program',
+    );
 }

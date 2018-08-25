@@ -14,4 +14,8 @@ class Linkage extends AbstractClass
         'path'          => StringType::class,
         'File'          => File::class,
     );
+
+    protected static $_mandatory = array(
+        'category',
+    );
 }

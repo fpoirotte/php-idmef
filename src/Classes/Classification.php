@@ -12,4 +12,8 @@ class Classification extends AbstractClass
         'text'          => StringType::class,
         'Reference'     => ReferenceList::class,
     );
+
+    protected static $_mandatory = array(
+        'text',
+    );
 }

@@ -13,4 +13,8 @@ class User extends AbstractClass
         'category'      => UserCategoryEnum::class,
         'UserId'        => UserIdList::class,
     );
+
+    protected static $_mandatory = array(
+        'UserId',
+    );
 }

@@ -9,4 +9,8 @@ class DetectTime extends AbstractClass
     protected static $_subclasses = array(
         'ntpstamp'       => NtpstampType::class,
     );
+
+    protected static $_mandatory = array(
+        'ntpstamp',
+    );
 }

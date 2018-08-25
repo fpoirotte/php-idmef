@@ -16,4 +16,9 @@ class Heartbeat extends AbstractIDMEFMessage
         'AnalyzerTime'      => AnalyzerTime::class,
         'AdditionalData'    => AdditionalDataList::class,
     );
+
+    protected static $_mandatory = array(
+        'Analyzer',
+        'CreateTime',
+    );
 }

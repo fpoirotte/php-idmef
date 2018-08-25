@@ -17,4 +17,8 @@ class Process extends AbstractClass
         'arg'           => ArgumentList::class,
         'env'           => EnvironmentList::class,
     );
+
+    protected static $_mandatory = array(
+        'name',
+    );
 }
