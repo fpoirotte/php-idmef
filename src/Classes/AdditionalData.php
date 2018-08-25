@@ -48,8 +48,13 @@ class AdditionalData extends AbstractClass
                 throw new \InvalidArgumentException($value);
             }
 
-            $value->_parent = $this;
-            $this->_children['data'] = $value;
+            $this->acquireLock(self::LOCK_EXCLUSIVE);
+            try {
+                $value->_parent = $this;
+                $this->_children['data'] = $value;
+            } finally {
+                $this->releaseLock(self::LOCK_EXCLUSIVE);
+            }
         } else {
             parent::__set($offset, $value);
         }
