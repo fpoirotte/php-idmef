@@ -432,8 +432,13 @@ class Xml extends AbstractSerializer
         // (namely OverflowAlert, ToolAlert, CorrelationAlert) can
         // add their own attributes before the additional data.
         // See the DTD in section 8 of RFC 4765 for more information.
-        foreach ($node->AdditionalData as $child) {
-            $this->visitAdditionalData($child);
+
+        // Also, we test whether the attribute is actually set
+        // prior to doing anything to prevent lock reentry.
+        if (isset($node->AdditionalData)) {
+            foreach ($node->AdditionalData as $child) {
+                $this->visitAdditionalData($child);
+            }
         }
     }
 
