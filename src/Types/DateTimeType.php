@@ -25,9 +25,10 @@ class DateTimeType extends AbstractType
 
     public function unserialize($serialized)
     {
-        // FIXME: support the more generic format from the RFC
         $formats = array(
-            self::FORMAT,
+            'Y-m-d\\TH:i:s.uP',
+            'Y-m-d\\TH:i:s,uP',
+            'Y-m-d\\TH:i:sP',
         );
         foreach ($formats as $format) {
             $res = \DateTimeImmutable::createFromFormat($format, $serialized);
