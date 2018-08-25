@@ -38,7 +38,12 @@ class Xml extends AbstractSerializer
         }
 
         $this->out->startDocument('1.0', 'UTF-8');
-        $this->_serialize($message);
+        $message->acquireLock($message::LOCK_SHARED, true);
+        try {
+            $this->_serialize($message);
+        } finally {
+            $message->releaseLock($message::LOCK_SHARED, true);
+        }
         $this->out->endDocument();
         return $this->out->outputMemory();
     }
