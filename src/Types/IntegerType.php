@@ -17,9 +17,15 @@ class IntegerType extends AbstractType
     public function unserialize($serialized)
     {
         $serialized = strtolower($serialized);
-        if (sscanf($serialized, '%d', $this->_value) !== 1 &&
-            sscanf($serialized, '%x', $this->_value) !== 1) {
+
+        if (!strncasecmp($serialized, '0x', 2)) {
+            if (sscanf((string) substr($serialized, 2), '%x%[^[]]', $value, $dummy) !== 1) {
+                throw new \InvalidArgumentException($serialized);
+            }
+        } elseif (sscanf($serialized, '%d%[^[]]', $value, $dummy) !== 1) {
             throw new \InvalidArgumentException($serialized);
         }
+
+        $this->_value = $value;
     }
 }
