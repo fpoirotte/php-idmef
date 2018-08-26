@@ -81,7 +81,20 @@ abstract class AbstractClass extends AbstractNode
                 is_a($type, AbstractList::class, true)) {
                 throw new \InvalidArgumentException($value);
             }
-            $value = new $type($value);
+
+            // First, we try to use the raw value as-is.
+            try {
+                $value = new $type($value);
+            } catch (\InvalidArgumentException $e) {
+                // If the raw value fails and it is a string,
+                // we try to use unserialization instead.
+                if (is_string($value)) {
+                    $value  = sprintf('C:%d:"%s":%d:{%s}', strlen($type), $type, strlen($value), $value);
+                    $value  = unserialize($value);
+                } else {
+                    throw $e;
+                }
+            }
         }
 
         if (!($value instanceof $type)) {
