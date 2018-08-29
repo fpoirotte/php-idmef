@@ -4,7 +4,7 @@ namespace fpoirotte\IDMEF\Classes;
 
 use \fpoirotte\IDMEF\Types\StringType;
 use \fpoirotte\IDMEF\Types\IntegerType;
-use \fpoirotte\IDMEF\Types\PortListType;
+use \fpoirotte\IDMEF\Types\PortlistType;
 
 class Service extends AbstractClass
 {
@@ -15,7 +15,7 @@ class Service extends AbstractClass
         'iana_protocol_name'    => StringType::class,
         'name'                  => StringType::class,
         'port'                  => IntegerType::class,
-        'portlist'              => PortListType::class,
+        'portlist'              => PortlistType::class,
         'protocol'              => StringType::class,
         'SNMPService'           => SNMPService::class,
         'WebService'            => WebService::class,
