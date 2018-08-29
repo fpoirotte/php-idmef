@@ -146,12 +146,13 @@ final class PreludeAgent
             );
 
             $binary = PHP_BINARY . "\0";
-            $agentOption = \FFI::own(\FFI::new('char [' . strlen($binary) . ']'), false);
+            $new = 'new'; // Workaround for parse error on \FFI::new in PHP 5.6.
+            $agentOption = \FFI::own(\FFI::$new('char [' . strlen($binary) . ']'), false);
             register_shutdown_function('\\FFI::free', $agentOption);
 
-            $optCount = \FFI::new('int [1]');
+            $optCount = \FFI::$new('int [1]');
             $optCount[0] = 1;
-            $agentOptions = \FFI::new('char *[1]');
+            $agentOptions = \FFI::$new('char *[1]');
             \FFI::memcpy($agentOption, $binary, strlen($binary));
             $agentOptions[0] = $agentOption;
 
