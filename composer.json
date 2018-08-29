@@ -3,7 +3,7 @@
     "name": "fpoirotte/idmef",
     "description": "IDMEF library for PHP",
     "keywords": ["security", "IDMEF", "intrustion", "detection", "Prelude", "SIEM"],
-    "homepage": "https://github.com/fpoirotte/IDMEF",
+    "homepage": "https://github.com/fpoirotte/php-idmef",
     "license": "MIT",
     "authors": [
         {
@@ -13,9 +13,9 @@
         }
     ],
     "support": {
-        "issues": "https://github.com/fpoirotte/IDMEF/issues",
+        "issues": "https://github.com/fpoirotte/php-idmef/issues",
         "irc": "irc://irc.iiens.net/Clicky",
-        "source": "https://github.com/fpoirotte/IDMEF"
+        "source": "https://github.com/fpoirotte/php-idmef"
     },
     "require": {
         "php": ">=5.6",
