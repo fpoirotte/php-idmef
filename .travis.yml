@@ -35,14 +35,6 @@ notifications:
       on_failure: always
 
 before_script:
-    - wget https://github.com/fpoirotte/php-ffi/archive/master.tar.gz
-    - tar xavf master.tar.gz
-    - cd php-ffi-master
-    - phpize
-    - ./configure --with-ffi
-    - make
-    - make install
-    - cd -
     - rm -rf vendor/
     - rm composer.lock
     - composer self-update -n
