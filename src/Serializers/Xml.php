@@ -504,11 +504,11 @@ class Xml extends AbstractSerializer
 
                     if ($this->in->namespaceURI !== self::XMLNS) {
                         $successfulRead = $this->in->next();
-                        continue;
+                        continue 2;
                     }
 
                     if ($this->in->localName === 'IDMEF-Message') {
-                        continue;
+                        continue 2;
                     }
 
                     $current = $xmlStack[count($xmlStack) - 1];
@@ -526,7 +526,7 @@ class Xml extends AbstractSerializer
                         $cls = "\\fpoirotte\\IDMEF\\Classes\\" . $this->in->localName;
                         if (!class_exists($cls)) {
                             $successfulRead = $this->in->next();
-                            continue;
+                            continue 2;
                         }
 
                         $current[] = new $cls;
