@@ -32,7 +32,7 @@ To use XML serialization/unserialization, you will also need:
 To send alerts to Prelude SIEM, you will also need:
 
 - PHP >= 7.3
-- D. Stogov's `FFI extension <https://github.com/dstogov/php-ffi/>`_ for PHP
+- Dmitry Stogov's `FFI extension <https://github.com/dstogov/php-ffi/>`_ for PHP
 - a working installation of `Prelude SIEM <https://www.prelude-siem.org/>`_,
   especially, a running instance of the ``prelude-manager`` service
 
