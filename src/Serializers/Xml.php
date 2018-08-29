@@ -508,7 +508,7 @@ class Xml extends AbstractSerializer
                     }
 
                     if ($this->in->localName === 'IDMEF-Message') {
-                        continue 2;
+                        break;
                     }
 
                     $current = $xmlStack[count($xmlStack) - 1];
