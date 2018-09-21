@@ -92,12 +92,17 @@ caveats:
     the following call may be used: ``$name = $alert->source[-1]->node->name;``.
     Compare this to Prelude's paths: ``alert.source(-1).node.name``.
 
--   PHP's array operator is also used to append a new entry to a list,
-    similar to Prelude SIEM's append operator (``>>``).
-    As a result, the following call can be used to add a new source node
-    to an alert and give it a name: ``$alert->source[]->node->name = "foo";``.
+-   Prelude SIEM's prepend (``<<``) and append (``>>``) operators can be used.
+    As a result, the following call appends a new source node to the alert
+    and gives it a name: ``$alert->source['>>']->node->name = "foo";``.
 
--   Prelude SIEM's prepend operator (``<<``) is not supported.
+-   PHP's array operator may also be used to append a new entry to a list.
+    Therefore, calling ``$alert->source[]->node->name = "foo";`` is functionally
+    identical to calling ``$alert->source['>>']->node->name = "foo";``.
+
+As is the case with Prelude SIEM, this library indexes IDMEF lists
+starting from 0. So, ``$alert->source[0]`` refers to the first source
+in the alert.
 
 Last but not least, there is one noticeable difference between this library's
 paths implementation and Prelude SIEM's paths, involving the ``Analyzer``
