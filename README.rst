@@ -154,15 +154,15 @@ IDMEF counterparts.
     * - PHP type
       - IDMEF type
     * - ``boolean``
-    * - boolean (``\fpoirotte\IDMEF\Types\BooleanType``)
+      - boolean (``\fpoirotte\IDMEF\Types\BooleanType``)
     * - ``integer``
-    * - integer (``\fpoirotte\IDMEF\Types\IntegerType``)
+      - integer (``\fpoirotte\IDMEF\Types\IntegerType``)
     * - ``string``
-    * - string (``\fpoirotte\IDMEF\Types\StringType``)
+      - string (``\fpoirotte\IDMEF\Types\StringType``)
     * - ``float``
-    * - real number (``\fpoirotte\IDMEF\Types\RealType``)
+      - real number (``\fpoirotte\IDMEF\Types\RealType``)
     * - ``\DateTimeInterface`` and its derivatives
-    * - date-type (``\fpoirotte\IDMEF\Types\DateTimeType``)
+      - date-type (``\fpoirotte\IDMEF\Types\DateTimeType``)
     * - ``\DOMNode``
       - xmltext (``\fpoirotte\IDMEF\Types\XmltextType``)
     * - ``\SimpleXMLElement``
