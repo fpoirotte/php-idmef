@@ -149,7 +149,7 @@ The following table shows how native PHP types after converted into their
 IDMEF counterparts.
 
 ..  list-table:: PHP-type to IDMEF-type conversion table
-    :header-rows:
+    :header-rows: 1
 
     * - PHP type
       - IDMEF type
