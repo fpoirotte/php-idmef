@@ -105,6 +105,10 @@ abstract class AbstractList extends AbstractNode implements \ArrayAccess, \Itera
         }
 
         $len = count($this->_children);
+        if ($offset === $len) {
+            return $offset;
+        }
+
         if ($offset > $len || $offset < -$len) {
             throw new \InvalidArgumentException($offset);
         }
