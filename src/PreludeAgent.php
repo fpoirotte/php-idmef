@@ -145,6 +145,8 @@ final class PreludeAgent
                 DIRECTORY_SEPARATOR . 'prelude.h'
             );
 
+            // prelude_init() requires an argc+argv formatted array.
+            // We build one based on the PHP binary's name.
             $binary = PHP_BINARY . "\0";
             $new = 'new'; // Workaround for parse error on \FFI::new in PHP 5.6.
             $agentOption = \FFI::own(\FFI::$new('char [' . strlen($binary) . ']'), false);
