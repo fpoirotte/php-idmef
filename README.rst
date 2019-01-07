@@ -273,7 +273,7 @@ When serializing an IDMEF message to XML, a special container must be created.
 
 Assuming an alert and a heartbeat have been created and stored respectively
 in the ``$alert`` and ``$heartbeat`` variables, the following example
-can be used to serialize them to an XML IDMEF message:
+can be used to serialize them into an XML IDMEF message:
 
 ..  sourcecode:: php
 
@@ -319,22 +319,25 @@ Prelude SIEM
 To send IDMEF messages to Prelude SIEM, you must first register a profile
 with the ``idmef:w`` permission for the library.
 
-On the machine where the library will be running, run this:
+On the machine where ``prelude-manager`` resides, run this:
+
+..  sourcecode:: bash
+
+    sudo prelude-admin registration-server prelude-manager
+
+
+In parallel, on the machine where the library will be running, run this:
 
 ..  sourcecode:: bash
 
     # Replace "php" with a custom name for the newly-created profile.
     #
-    # Replace "clicky" & "users" with the actual username and group name
-    # that will be used to run the PHP script where the library is called.
+    # Replace "localhost" with the hostname where prelude-manager is installed.
     #
-    $ sudo prelude-admin register php idmef:w localhost --uid clicky --gid users
-
-In parallel, on the machine where ``prelude-manager`` resides, run this:
-
-..  sourcecode:: bash
-
-    sudo prelude-admin registration-server prelude-manager
+    # Replace "clicky" & "users" respectively with the names of the user and group
+    # that will execute the PHP script.
+    #
+    sudo prelude-admin register php idmef:w localhost --uid clicky --gid users
 
 Then, follow the instructions printed by both commands.
 
