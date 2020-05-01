@@ -60,7 +60,7 @@ class AdditionalData extends AbstractClass
             } elseif (is_string($value)) {
                 if ($type !== null) {
                     $cls = str_replace(' ', '', ucwords(str_replace('-', ' ', $type->getValue())));
-                    $cls = "\\fpoirotte\\IDMEF\\Types\\$clsType";
+                    $cls = "\\fpoirotte\\IDMEF\\Types\\${cls}Type";
                     $value  = sprintf('C:%d:"%s":%d:{%s}', strlen($cls), $cls, strlen($value), $value);
                     $value  = unserialize($value);
                 } else {
