@@ -10,7 +10,7 @@ use \fpoirotte\IDMEF\Serializers\Xml;
 
 class XmlTest extends TestCase
 {
-    public function setUp()
+    public function setUp() : void
     {
         $this->heartbeat = new Heartbeat;
         $this->heartbeat->messageid = 'abc123456789';

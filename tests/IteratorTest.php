@@ -5,7 +5,7 @@ use \fpoirotte\IDMEF\Classes\Alert;
 
 class IteratorTest extends TestCase
 {
-    public function setUp()
+    public function setUp() : void
     {
         $this->alert = new Alert();
         $this->alert->messageid = 'abc';
