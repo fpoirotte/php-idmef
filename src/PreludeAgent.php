@@ -28,7 +28,7 @@ final class PreludeAgent
     const PRELUDE_CLIENT_EXIT_STATUS_FAILURE = -1;
     const PRELUDE_CLIENT_EXIT_STATUS_SUCCESS = 0;
 
-    private static $ffi = null;
+    private static $libprelude = null;
     private static $normMapping = array(
         'A' => '_a', 'B' => '_b', 'C' => '_c', 'D' => '_d', 'E' => '_e',
         'F' => '_f', 'G' => '_g', 'H' => '_h', 'I' => '_i', 'J' => '_j',
@@ -48,14 +48,14 @@ final class PreludeAgent
             throw new \InvalidArgumentException('Invalid profile name');
         }
 
-        $this->client = self::$ffi->new("prelude_client_t *");
-        self::$ffi->prelude_client_new(\FFI::addr($this->client), $profile);
+        $this->client = self::$libprelude->new("prelude_client_t *");
+        self::$libprelude->prelude_client_new(\FFI::addr($this->client), $profile);
 
         if (is_null($this->client)) {
             throw new \RuntimeException('Could not create Prelude client');
         }
 
-        $res = self::$ffi->prelude_client_start($this->client);
+        $res = self::$libprelude->prelude_client_start($this->client);
         if ($res < 0) {
             throw new \RuntimeException('Could not start Prelude client');
         }
@@ -69,7 +69,7 @@ final class PreludeAgent
     private function stop()
     {
         if ($this->client !== null) {
-            self::$ffi->prelude_client_destroy($this->client, $this->status);
+            self::$libprelude->prelude_client_destroy($this->client, $this->status);
             $this->client = null;
         }
     }
@@ -101,8 +101,8 @@ final class PreludeAgent
 
     private function send(AbstractIDMEFMessage $message)
     {
-        $idmef = self::$ffi->new("idmef_message_t *");
-        $res = self::$ffi->idmef_message_new(\FFI::addr($idmef));
+        $idmef = self::$libprelude->new("idmef_message_t *");
+        $res = self::$libprelude->idmef_message_new(\FFI::addr($idmef));
         if ($res < 0) {
             throw new \RuntimeException('Could not create IDMEF object: error #' . $res);
         }
@@ -116,21 +116,21 @@ final class PreludeAgent
 
                 foreach ($message->getIterator('{' . AbstractType::class . '}', null, 0, -1) as $path => $value) {
                     $path = $this->adaptPath($path);
-                    self::$ffi->idmef_message_set_string($idmef, $path, (string) $value);
+                    self::$libprelude->idmef_message_set_string($idmef, $path, (string) $value);
                 }
 
-                self::$ffi->prelude_client_send_idmef($this->client, $idmef);
+                self::$libprelude->prelude_client_send_idmef($this->client, $idmef);
             } finally {
                 $message->releaseLock($message::LOCK_SHARED, true);
             }
         } finally {
-            self::$ffi->idmef_message_destroy($idmef);
+            self::$libprelude->idmef_message_destroy($idmef);
         }
     }
 
     public static function create($profile = self::DEFAULT_PROFILE_NAME)
     {
-        if (self::$ffi === null) {
+        if (self::$libprelude === null) {
             // We rely on class detection instead of extension detection
             // because there exists several PHP extensions named "FFI".
             // We need the one developed by D. Stogov for PHP 7.3+,
@@ -140,7 +140,7 @@ final class PreludeAgent
                                             "is required to use this feature");
             }
 
-            self::$ffi = \FFI::load(
+            self::$libprelude = \FFI::load(
                 dirname(__DIR__) .
                 DIRECTORY_SEPARATOR . 'data' .
                 DIRECTORY_SEPARATOR . 'prelude.h'
@@ -159,7 +159,7 @@ final class PreludeAgent
             \FFI::memcpy($agentOption, $binary, strlen($binary));
             $agentOptions[0] = $agentOption;
 
-            if (self::$ffi->prelude_init($optCount, $agentOptions) < 0) {
+            if (self::$libprelude->prelude_init($optCount, $agentOptions) < 0) {
                 throw new \InvalidArgumentException('Could not initialize Prelude');
             }
         }
