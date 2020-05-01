@@ -37,7 +37,7 @@ before_script:
   - rm composer.lock
   - composer self-update -n
   - if [ "$TRAVIS_PHP_VERSION" = "nightly" ]; then
-      composer install -n ignore-platform-reqs;
+      composer install -n --ignore-platform-reqs;
     else
       composer install -n;
     fi
