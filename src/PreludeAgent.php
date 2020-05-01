@@ -24,6 +24,7 @@ use \fpoirotte\IDMEF\Classes\AbstractIDMEFMessage;
  */
 final class PreludeAgent
 {
+    const DEFAULT_PROFILE_NAME = "php";
     const PRELUDE_CLIENT_EXIT_STATUS_FAILURE = -1;
     const PRELUDE_CLIENT_EXIT_STATUS_SUCCESS = 0;
 
@@ -127,7 +128,7 @@ final class PreludeAgent
         }
     }
 
-    public static function create($profile = 'php')
+    public static function create($profile = self::DEFAULT_PROFILE_NAME)
     {
         if (self::$ffi === null) {
             // We rely on class detection instead of extension detection
