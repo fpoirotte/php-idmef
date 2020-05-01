@@ -150,7 +150,7 @@ final class PreludeAgent
             // We build one based on the PHP binary's name.
             $binary = PHP_BINARY . "\0";
             $new = 'new'; // Workaround for parse error on \FFI::new in PHP 5.6.
-            $agentOption = \FFI::own(\FFI::$new('char [' . strlen($binary) . ']'), false);
+            $agentOption = \FFI::$new('char [' . strlen($binary) . ']', false);
             register_shutdown_function('\\FFI::free', $agentOption);
 
             $optCount = \FFI::$new('int [1]');
