@@ -1,5 +1,5 @@
 language: php
-dist: trusty
+dist: bionic
 sudo: false
 
 cache:
@@ -36,7 +36,11 @@ before_script:
   - rm -rf vendor/
   - rm composer.lock
   - composer self-update -n
-  - composer install -n
+  - if [ "$TRAVIS_PHP_VERSION" = "nightly" ]; then
+      composer install -n ignore-platform-reqs;
+    else
+      composer install -n;
+    fi
 
 script:
   - vendor/bin/phpunit
