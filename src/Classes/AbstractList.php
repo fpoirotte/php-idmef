@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace fpoirotte\IDMEF\Classes;
 
@@ -11,22 +12,22 @@ abstract class AbstractList extends AbstractNode implements \ArrayAccess, \Itera
 {
     protected $_type = null;
 
-    public function getItemsType()
+    public function getItemsType(): ?string
     {
         return $this->_type;
     }
 
-    public function count()
+    public function count(): int
     {
         return count($this->_children);
     }
 
-    protected function changeChildParent($child)
+    protected function changeChildParent(AbstractNode $child): void
     {
         $child->_parent = $this;
     }
 
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         try {
             $this->_validateOffset($offset);
@@ -68,7 +69,7 @@ abstract class AbstractList extends AbstractNode implements \ArrayAccess, \Itera
         return $this->_children[$offset];
     }
 
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         $offset = $this->_validateOffset($offset);
         if (!($value instanceof $this->_type)) {
@@ -91,7 +92,7 @@ abstract class AbstractList extends AbstractNode implements \ArrayAccess, \Itera
         }
     }
 
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         $this->acquireLock(self::LOCK_EXCLUSIVE);
         try {
@@ -130,7 +131,7 @@ abstract class AbstractList extends AbstractNode implements \ArrayAccess, \Itera
      * Specialized iterator factory that acts as a passthrough
      * and does not modify the $minDepth/$maxDepth parameters.
      */
-    public function getIterator($path = null, $value = null, $minDepth = 0, $maxDepth = 0)
+    public function getIterator(?string $path = null, $value = null, int $minDepth = 0, int $maxDepth = 0): \Generator
     {
         foreach ($this->_children as $child) {
             foreach ($child->getIterator($path, $value, $minDepth, $maxDepth) as $subpath => $subnode) {
@@ -139,7 +140,7 @@ abstract class AbstractList extends AbstractNode implements \ArrayAccess, \Itera
         }
     }
 
-    public function getPath($child = null)
+    public function getPath($child = null): ?string
     {
         return ($this->_parent === null) ? null : $this->_parent->getPath($this);
     }

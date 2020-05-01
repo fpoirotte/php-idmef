@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace fpoirotte\IDMEF\Classes;
 
@@ -15,7 +16,7 @@ class Node extends AbstractClass
         'Address'       => AddressList::class,
     );
 
-    public function isValid()
+    public function isValid(): bool
     {
         $this->acquireLock(self::LOCK_SHARED, true);
         try {

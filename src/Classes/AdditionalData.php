@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace fpoirotte\IDMEF\Classes;
 
@@ -48,10 +49,10 @@ class AdditionalData extends AbstractClass
      * -    The object is valid if and only if a value has been set.
      */
 
-    public function __set($property, $value)
+    public function __set(string $property, $value): void
     {
-        $type = isset($this->_children['type']) ? $this->_children['type'] : null;
-        $data = isset($this->_children['data']) ? $this->_children['data'] : null;
+        $type = $this->_children['type'] ?? null;
+        $data = $this->_children['data'] ?? null;
 
         if ($property === 'data') {
             if ($value === null) {
@@ -119,7 +120,7 @@ class AdditionalData extends AbstractClass
         }
     }
 
-    public function __unset($property)
+    public function __unset(string $property): void
     {
         if ($property === 'type') {
             $this->acquireLock(self::LOCK_EXCLUSIVE);
@@ -134,7 +135,7 @@ class AdditionalData extends AbstractClass
         }
     }
 
-    public function isValid()
+    public function isValid(): bool
     {
         return isset($this->_children['data']);
     }

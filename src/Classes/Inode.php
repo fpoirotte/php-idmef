@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace fpoirotte\IDMEF\Classes;
 
@@ -16,7 +17,7 @@ class Inode extends AbstractClass
         'c-minor-device'    => IntegerType::class,
     );
 
-    public function isValid()
+    public function isValid(): bool
     {
         $this->acquireLock(self::LOCK_SHARED, true);
         try {

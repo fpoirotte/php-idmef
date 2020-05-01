@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace fpoirotte\IDMEF;
 
@@ -20,12 +21,12 @@ class XmlValidationErrors extends \Exception
         parent::__construct('Validation errors', $lvl);
     }
 
-    public function getValidationErrors()
+    public function getValidationErrors(): array
     {
         return $this->validationErrors;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         $msg = "Validation errors:\n\n";
         $levels = array(
@@ -41,7 +42,7 @@ class XmlValidationErrors extends \Exception
         return $msg;
     }
 
-    public static function raiseOnValidationErrors(array $errors, $level = \LIBXML_ERR_WARNING)
+    public static function raiseOnValidationErrors(array $errors, int $level = \LIBXML_ERR_WARNING): void
     {
         $lvl = \LIBXML_ERR_WARNING;
         foreach ($errors as $error) {

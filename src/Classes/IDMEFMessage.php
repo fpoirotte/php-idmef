@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace fpoirotte\IDMEF\Classes;
 
@@ -10,7 +11,7 @@ class IDMEFMessage extends AbstractList
 {
     protected $_type = AbstractIDMEFMessage::class;
 
-    protected function changeChildParent($child)
+    protected function changeChildParent(AbstractNode $child): void
     {
         // Do not change the node's parent.
         //

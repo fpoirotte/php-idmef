@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace fpoirotte\IDMEF\Classes;
 
@@ -9,12 +10,8 @@ use \fpoirotte\IDMEF\LockException;
  */
 abstract class AbstractClass extends AbstractNode
 {
-    protected function _normalizeProperty($prop)
+    protected function _normalizeProperty(string $prop): string
     {
-        if (!is_string($prop)) {
-            throw new \InvalidArgumentException($prop);
-        }
-
         // If we have a perfect match, do not go any further.
         if (isset(static::$_subclasses[$prop])) {
             return $prop;
@@ -71,7 +68,7 @@ abstract class AbstractClass extends AbstractNode
         throw new \InvalidArgumentException($prop);
     }
 
-    public function __set($prop, $value)
+    public function __set(string $prop, $value): void
     {
         $prop = $this->_normalizeProperty($prop);
         $type = static::$_subclasses[$prop];
@@ -111,13 +108,13 @@ abstract class AbstractClass extends AbstractNode
         }
     }
 
-    public function __isset($prop)
+    public function __isset(string $prop): bool
     {
         $prop = $this->_normalizeProperty($prop);
         return isset($this->_children[$prop]);
     }
 
-    public function __unset($prop)
+    public function __unset(string $prop): void
     {
         $prop = $this->_normalizeProperty($prop);
         $this->acquireLock(self::LOCK_EXCLUSIVE);

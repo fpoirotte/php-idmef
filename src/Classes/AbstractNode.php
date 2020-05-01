@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace fpoirotte\IDMEF\Classes;
 
@@ -19,7 +20,7 @@ abstract class AbstractNode implements \IteratorAggregate
     const LOCK_EXCLUSIVE = 0;
     const LOCK_SHARED = 1;
 
-    public function isValid()
+    public function isValid(): bool
     {
         $this->acquireLock(self::LOCK_SHARED, true);
         try {
@@ -55,22 +56,22 @@ abstract class AbstractNode implements \IteratorAggregate
         throw new \InvalidArgumentException($prop);
     }
 
-    public function __set($prop, $value)
+    public function __set(string $prop, $value): void
     {
         throw new \InvalidArgumentException($prop);
     }
 
-    public function __isset($prop)
+    public function __isset(string $prop): bool
     {
         throw new \InvalidArgumentException($prop);
     }
 
-    public function __unset($prop)
+    public function __unset(string $prop): void
     {
         throw new \InvalidArgumentException($prop);
     }
 
-    public function acquireLock($mode = self::LOCK_EXCLUSIVE, $recursive = false)
+    public function acquireLock(int $mode = self::LOCK_EXCLUSIVE, bool $recursive = false): void
     {
         if (!in_array($mode, array(self::LOCK_EXCLUSIVE, self::LOCK_SHARED))) {
             throw new \InvalidArgumentException($mode);
@@ -100,7 +101,7 @@ abstract class AbstractNode implements \IteratorAggregate
         $this->_locks[$mode]++;
     }
 
-    public function releaseLock($mode = self::LOCK_EXCLUSIVE, $recursive = false)
+    public function releaseLock(int $mode = self::LOCK_EXCLUSIVE, bool $recursive = false): void
     {
         if (!in_array($mode, array(self::LOCK_EXCLUSIVE, self::LOCK_SHARED))) {
             throw new \InvalidArgumentException($mode);
@@ -119,13 +120,13 @@ abstract class AbstractNode implements \IteratorAggregate
         $this->_locks[$mode]--;
     }
 
-    public function isLocked($mode = null)
+    public function isLocked(?int $mode = null): bool
     {
-        $locks = (isset($this->_locks[$mode]) ? $this->_locks[$mode] : array_sum($this->_locks));
+        $locks = $this->_locks[$mode] ?? array_sum($this->_locks);
         return $locks > 0;
     }
 
-    public function getParent()
+    public function getParent(): ?AbstractNode
     {
         $parent = $this->_parent;
         if (is_object($parent) && ($parent instanceof AbstractList)) {
@@ -134,7 +135,7 @@ abstract class AbstractNode implements \IteratorAggregate
         return $parent;
     }
 
-    public function getPath()
+    public function getPath(): ?string
     {
         $cls = substr(strrchr(get_class($this), '\\'), 1);
         if ($this->_parent !== null) {
@@ -161,7 +162,7 @@ abstract class AbstractNode implements \IteratorAggregate
         $this->_locks = array(0, 0);
     }
 
-    public function getIterator($path = null, $value = null, $minDepth = 1, $maxDepth = 1)
+    public function getIterator(?string $path = null, $value = null, int $minDepth = 1, int $maxDepth = 1): \Generator
     {
         $matchesPath = true;
         $matchesValue = ($value === null) || (($this instanceof AbstractType) && $this->getValue() === $value);

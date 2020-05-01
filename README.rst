@@ -19,7 +19,7 @@ Prerequisites
 For basic usage, you only need the following dependencies:
 
 - The `Composer <https://getcomposer.org/>`_ dependency manager
-- PHP >= 5.6
+- PHP >= 7.1
 - the PHP ``DOM`` extension
 - the PHP ``Filter`` extension
 
@@ -29,12 +29,10 @@ To use XML serialization/unserialization, you will also need:
 - the PHP ``XMLReader`` extension
 - the PHP ``XMLWriter`` extension
 
-To send alerts to Prelude SIEM, you will also need:
+To send alerts to Prelude SIEM, you will need:
 
-- PHP >= 7.3
-- Dmitry Stogov's `FFI extension <https://github.com/dstogov/php-ffi/>`_ for PHP
-- a working installation of `Prelude SIEM <https://www.prelude-siem.org/>`_,
-  especially, a running instance of the ``prelude-manager`` service
+- PHP >= 7.4
+- the PHP ``FFI`` extension
 
 
 Installation
@@ -87,7 +85,7 @@ caveats:
 -   PHP's array operator (``[]``) is used to access entries inside a list,
     instead of Prelude's list access operator (``()``).
 
-    Like Prelude SIEM, this library also supports negative list indices. 
+    Like Prelude SIEM, this library also supports negative list indices.
     Therefore, to retrieve the name of the last source node using the getters,
     the following call may be used: ``$name = $alert->source[-1]->node->name;``.
     Compare this to Prelude's paths: ``alert.source(-1).node.name``.

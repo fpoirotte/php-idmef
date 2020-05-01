@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace fpoirotte\IDMEF\Types;
 
@@ -14,7 +15,7 @@ class BooleanType extends AbstractType
         $this->_value = $value;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->_value ? 'true' : 'false';
     }

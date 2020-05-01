@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace fpoirotte\IDMEF\Serializers;
 
@@ -9,15 +10,7 @@ use \fpoirotte\IDMEF\Classes\IDMEFMessage;
  */
 abstract class AbstractSerializer
 {
-    abstract public function serialize(IDMEFMessage $message);
+    abstract public function serialize(IDMEFMessage $message): string;
 
-    abstract protected function _unserialize($serialized);
-
-    public function unserialize($serialized)
-    {
-        if (!is_string($serialized)) {
-            throw new \InvalidArgumentException($serialized);
-        }
-        return $this->_unserialize($serialized);
-    }
+    abstract public function unserialize(string $serialized): IDMEFMessage;
 }

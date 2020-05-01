@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace fpoirotte\IDMEF;
 
@@ -66,7 +67,7 @@ final class PreludeAgent
         $this->stop();
     }
 
-    private function stop()
+    private function stop(): void
     {
         if ($this->client !== null) {
             self::$libprelude->prelude_client_destroy($this->client, $this->status);
@@ -79,7 +80,7 @@ final class PreludeAgent
         throw new \RuntimeException('Cloning this class is prohibited');
     }
 
-    private static function adaptPath($path)
+    private static function adaptPath($path): string
     {
         // Turn paths like "Alert.AdditionalData(0)" into a Prelude-compatible
         // path (eg. "alert.additional_data(0)")
@@ -99,7 +100,7 @@ final class PreludeAgent
         return $path;
     }
 
-    private function send(AbstractIDMEFMessage $message)
+    private function send(AbstractIDMEFMessage $message): void
     {
         $idmef = self::$libprelude->new("idmef_message_t *");
         $res = self::$libprelude->idmef_message_new(\FFI::addr($idmef));
@@ -128,15 +129,13 @@ final class PreludeAgent
         }
     }
 
-    public static function create($profile = self::DEFAULT_PROFILE_NAME)
+    public static function create($profile = self::DEFAULT_PROFILE_NAME): \Generator
     {
         if (self::$libprelude === null) {
             // We rely on class detection instead of extension detection
             // because there exists several PHP extensions named "FFI".
-            // We need the one developed by D. Stogov for PHP 7.3+,
-            // not the one from PECL (https://github.com/php/pecl-php-ffi/).
             if (!class_exists("\\FFI\\CType")) {
-                throw new \RuntimeException("The php-ffi extension (https://github.com/dstogov/php-ffi) " .
+                throw new \RuntimeException("The FFI extension (https://www.php.net/FFI) " .
                                             "is required to use this feature");
             }
 
@@ -149,13 +148,12 @@ final class PreludeAgent
             // prelude_init() requires an argc+argv formatted array.
             // We build one based on the PHP binary's name.
             $binary = PHP_BINARY . "\0";
-            $new = 'new'; // Workaround for parse error on \FFI::new in PHP 5.6.
-            $agentOption = \FFI::$new('char [' . strlen($binary) . ']', false);
+            $agentOption = \FFI::new('char [' . strlen($binary) . ']', false);
             register_shutdown_function('\\FFI::free', $agentOption);
 
-            $optCount = \FFI::$new('int [1]');
+            $optCount = \FFI::new('int [1]');
             $optCount[0] = 1;
-            $agentOptions = \FFI::$new('char *[1]');
+            $agentOptions = \FFI::new('char *[1]');
             \FFI::memcpy($agentOption, $binary, strlen($binary));
             $agentOptions[0] = $agentOption;
 

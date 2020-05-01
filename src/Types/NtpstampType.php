@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace fpoirotte\IDMEF\Types;
 
@@ -34,7 +35,7 @@ class NtpstampType extends AbstractType
         $this->unserialize($value);
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->_ntpstamp;
     }

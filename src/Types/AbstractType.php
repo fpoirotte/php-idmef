@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace fpoirotte\IDMEF\Types;
 
@@ -22,7 +23,7 @@ abstract class AbstractType extends AbstractNode implements \Serializable
         return $this->_value;
     }
 
-    public function getPath()
+    public function getPath(): ?string
     {
         if ($this->_parent === null) {
             return null;

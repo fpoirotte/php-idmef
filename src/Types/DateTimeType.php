@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace fpoirotte\IDMEF\Types;
 
@@ -18,7 +19,7 @@ class DateTimeType extends AbstractType
         $this->_value = $value;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->_value->format(static::FORMAT);
     }

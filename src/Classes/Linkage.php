@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace fpoirotte\IDMEF\Classes;
 
@@ -18,7 +19,7 @@ class Linkage extends AbstractClass
         'category',
     );
 
-    public function isValid()
+    public function isValid(): bool
     {
         $this->acquireLock(self::LOCK_SHARED, true);
         try {

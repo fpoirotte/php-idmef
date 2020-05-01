@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace fpoirotte\IDMEF\Serializers;
 
@@ -7,6 +8,7 @@ use \fpoirotte\IDMEF\Types\DateTimeType;
 use \fpoirotte\IDMEF\Classes\IDMEFMessage;
 use \fpoirotte\IDMEF\Classes\AbstractClass;
 use \fpoirotte\IDMEF\Classes\AbstractList;
+use \fpoirotte\IDMEF\Classes\AbstractNode;
 use \fpoirotte\IDMEF\Classes\AdditionalData;
 
 /**
@@ -29,7 +31,7 @@ class Xml extends AbstractSerializer
     // Serialization
     //
 
-    public function serialize(IDMEFMessage $message)
+    public function serialize(IDMEFMessage $message): string
     {
         $this->out = new \XMLWriter();
         $this->out->openMemory();
@@ -53,7 +55,7 @@ class Xml extends AbstractSerializer
         return $this->out->outputMemory();
     }
 
-    protected function _serialize($node)
+    protected function _serialize(AbstractNode $node): void
     {
         $classes = array_merge(array(get_class($node)), class_parents($node));
         $visited = array();
@@ -81,7 +83,7 @@ class Xml extends AbstractSerializer
         }
     }
 
-    protected function writeAttributes($node, ...$attributes)
+    protected function writeAttributes(AbstractNode $node, string ...$attributes): void
     {
         foreach ($attributes as $attribute) {
             if (!isset($node->$attribute)) {
@@ -90,14 +92,14 @@ class Xml extends AbstractSerializer
 
             $attr = $node->$attribute;
             if ($attr instanceof AbstractType) {
-                $this->out->writeAttribute($attribute, $attr);
+                $this->out->writeAttribute($attribute, (string) $attr);
             } else {
                 throw new \InvalidArgumentException(get_class($node) . ".$attribute");
             }
         }
     }
 
-    protected function writeElements($node, ...$elements)
+    protected function writeElements(AbstractNode $node, string ...$elements): void
     {
         foreach ($elements as $element) {
             if (!isset($node->$element)) {
@@ -119,13 +121,13 @@ class Xml extends AbstractSerializer
         }
     }
 
-    protected function visitAbstractType($node)
+    protected function visitAbstractType(AbstractNode $node): void
     {
         $this->out->startElement($node::XML_TYPE);
         $this->out->text((string) $node);
     }
 
-    protected function visitIDMEFMessage($node)
+    protected function visitIDMEFMessage(AbstractNode $node): void
     {
         $this->out->startElementNS(null, 'IDMEF-Message', 'http://iana.org/idmef');
         $this->out->writeAttribute('version', '1.0');
@@ -134,7 +136,7 @@ class Xml extends AbstractSerializer
         }
     }
 
-    protected function visitAlert($node)
+    protected function visitAlert(AbstractNode $node): void
     {
         $this->out->startElement('Alert');
         $this->writeAttributes($node, 'messageid');
@@ -155,7 +157,7 @@ class Xml extends AbstractSerializer
         );
     }
 
-    protected function visitHeartbeat($node)
+    protected function visitHeartbeat(AbstractNode $node): void
     {
         $this->out->startElement('Heartbeat');
         $this->writeAttributes($node, 'messageid');
@@ -169,33 +171,33 @@ class Xml extends AbstractSerializer
         );
     }
 
-    protected function visitCorrelationAlert($node)
+    protected function visitCorrelationAlert(AbstractNode $node): void
     {
         $this->out->startElement('CorrelationAlert');
         $this->writeElements($node, 'name', 'alertident');
     }
 
-    protected function visitOverflowAlert($node)
+    protected function visitOverflowAlert(AbstractNode $node): void
     {
         $this->out->startElement('OverflowAlert');
         $this->writeAttributes($node, 'program', 'size', 'buffer');
     }
 
-    protected function visitToolAlert($node)
+    protected function visitToolAlert(AbstractNode $node): void
     {
         $this->out->startElement('ToolAlert');
         $this->writeAttributes($node, 'name', 'command');
         $this->writeElements($node, 'alertident');
     }
 
-    protected function visitAdditionalData($node)
+    protected function visitAdditionalData(AbstractNode $node): void
     {
         $this->out->startElement('AdditionalData');
         $this->writeAttributes($node, 'type', 'meaning');
         $this->_serialize($node->data);
     }
 
-    protected function visitAnalyzer($node)
+    protected function visitAnalyzer(AbstractNode $node): void
     {
         $this->out->startElement('Analyzer');
         $this->writeAttributes(
@@ -212,55 +214,55 @@ class Xml extends AbstractSerializer
         $this->writeElements($node, 'Node', 'Process', 'Analyzer');
     }
 
-    protected function visitClassification($node)
+    protected function visitClassification(AbstractNode $node): void
     {
         $this->out->startElement('Classification');
         $this->writeAttributes($node, 'ident', 'text');
         $this->writeElements($node, 'Reference');
     }
 
-    protected function visitSource($node)
+    protected function visitSource(AbstractNode $node): void
     {
         $this->out->startElement('Source');
         $this->writeAttributes($node, 'ident', 'spoofed', 'interface');
         $this->writeElements($node, 'Node', 'User', 'Process', 'Service');
     }
 
-    protected function visitTarget($node)
+    protected function visitTarget(AbstractNode $node): void
     {
         $this->out->startElement('Target');
         $this->writeAttributes($node, 'ident', 'decoy', 'interface');
         $this->writeElements($node, 'Node', 'User', 'Process', 'Service', 'File');
     }
 
-    protected function visitAssessment($node)
+    protected function visitAssessment(AbstractNode $node): void
     {
         $this->out->startElement('Assessment');
         $this->writeElements($node, 'Impact', 'Action', 'Confidence');
     }
 
-    protected function visitReference($node)
+    protected function visitReference(AbstractNode $node): void
     {
         $this->out->startElement('Reference');
         $this->writeAttributes($node, 'origin', 'meaning');
         $this->writeElements($node, 'name', 'url');
     }
 
-    protected function visitNode($node)
+    protected function visitNode(AbstractNode $node): void
     {
         $this->out->startElement('Node');
         $this->writeAttributes($node, 'ident', 'category');
         $this->writeElements($node, 'location', 'name', 'Address');
     }
 
-    protected function visitAddress($node)
+    protected function visitAddress(AbstractNode $node): void
     {
         $this->out->startElement('Address');
         $this->writeAttributes($node, 'ident', 'category', 'vlan-name', 'vlan-num');
         $this->writeElements($node, 'address', 'netmask');
     }
 
-    protected function visitFile($node)
+    protected function visitFile(AbstractNode $node): void
     {
         $this->out->startElement('File');
         $this->writeAttributes($node, 'ident', 'category', 'fstype', 'file-type');
@@ -280,19 +282,19 @@ class Xml extends AbstractSerializer
         );
     }
 
-    protected function visitPermission($node)
+    protected function visitPermission(AbstractNode $node): void
     {
         $this->out->startElement('Permission');
         $this->writeAttributes($node, 'perms');
     }
 
-    protected function visitFileAccess($node)
+    protected function visitFileAccess(AbstractNode $node): void
     {
         $this->out->startElement('FileAccess');
         $this->writeElements($node, 'UserId', 'Permission');
     }
 
-    protected function visitInode($node)
+    protected function visitInode(AbstractNode $node): void
     {
         $this->out->startElement('Inode');
         $this->writeElements(
@@ -306,28 +308,28 @@ class Xml extends AbstractSerializer
         );
     }
 
-    protected function visitLinkage($node)
+    protected function visitLinkage(AbstractNode $node): void
     {
         $this->out->startElement('Linkage');
         $this->writeAttributes($node, 'category');
         $this->writeElements($node, 'name', 'path', 'File');
     }
 
-    protected function visitChecksum($node)
+    protected function visitChecksum(AbstractNode $node): void
     {
         $this->out->startElement('Checksum');
         $this->writeAttributes($node, 'algorithm');
         $this->writeElements($node, 'value', 'key');
     }
 
-    protected function visitProcess($node)
+    protected function visitProcess(AbstractNode $node): void
     {
         $this->out->startElement('Process');
         $this->writeAttributes($node, 'ident');
         $this->writeElements($node, 'name', 'pid', 'path', 'arg', 'env');
     }
 
-    protected function visitService($node)
+    protected function visitService(AbstractNode $node): void
     {
         $this->out->startElement('Service');
         $this->writeAttributes(
@@ -348,7 +350,7 @@ class Xml extends AbstractSerializer
         );
     }
 
-    protected function visitSNMPService($node)
+    protected function visitSNMPService(AbstractNode $node): void
     {
         $this->out->startElement('SNMPService');
         $this->writeElements(
@@ -364,71 +366,71 @@ class Xml extends AbstractSerializer
         );
     }
 
-    protected function visitUser($node)
+    protected function visitUser(AbstractNode $node): void
     {
         $this->out->startElement('User');
         $this->writeAttributes($node, 'ident', 'category');
         $this->writeElements($node, 'UserId');
     }
 
-    protected function visitUserId($node)
+    protected function visitUserId(AbstractNode $node): void
     {
         $this->out->startElement('UserId');
         $this->writeAttributes($node, 'ident', 'type', 'tty');
         $this->writeElements($node, 'name', 'number');
     }
 
-    protected function visitWebService($node)
+    protected function visitWebService(AbstractNode $node): void
     {
         $this->out->startElement('WebService');
         $this->writeElements($node, 'url', 'cgi', 'http-method', 'arg');
     }
 
-    protected function visitAction($node)
+    protected function visitAction(AbstractNode $node): void
     {
         $this->out->startElement('Action');
         $this->writeAttributes($node, 'category');
     }
 
-    protected function visitCreateTime($node)
+    protected function visitCreateTime(AbstractNode $node): void
     {
         $this->out->startElement('CreateTime');
         $this->writeAttributes($node, 'ntpstamp');
         $this->out->text($node->ntpstamp->getValue()->format(DateTimeType::FORMAT));
     }
 
-    protected function visitDetectTime($node)
+    protected function visitDetectTime(AbstractNode $node): void
     {
         $this->out->startElement('DetectTime');
         $this->writeAttributes($node, 'ntpstamp');
         $this->out->text($node->ntpstamp->getValue()->format(DateTimeType::FORMAT));
     }
 
-    protected function visitAnalyzerTime($node)
+    protected function visitAnalyzerTime(AbstractNode $node): void
     {
         $this->out->startElement('AnalyzerTime');
         $this->writeAttributes($node, 'ntpstamp');
         $this->out->text($node->ntpstamp->getValue()->format(DateTimeType::FORMAT));
     }
 
-    protected function visitConfidence($node)
+    protected function visitConfidence(AbstractNode $node): void
     {
         $this->out->startElement('Confidence');
         $this->writeAttributes($node, 'rating');
     }
 
-    protected function visitImpact($node)
+    protected function visitImpact(AbstractNode $node): void
     {
         $this->out->startElement('Impact');
         $this->writeAttributes($node, 'severity', 'completion', 'type');
     }
 
-    protected function visitAlertIdent($node)
+    protected function visitAlertIdent(AbstractNode $node): void
     {
         $this->out->startElement('alertident');
         $this->writeAttributes($node, 'analyzerid');
         if (isset($node->alertident)) {
-            $this->out->text($node->alertident);
+            $this->out->text((string) $node->alertident);
         }
     }
 
@@ -436,7 +438,7 @@ class Xml extends AbstractSerializer
     // Unserialization
     //
 
-    protected function _unserialize($serialized)
+    public function unserialize(string $serialized): IDMEFMessage
     {
         $options = LIBXML_NONET | LIBXML_PARSEHUGE | LIBXML_HTML_NOIMPLIED |
                    LIBXML_HTML_NODEFDTD | LIBXML_NOXMLDECL;
@@ -461,7 +463,7 @@ class Xml extends AbstractSerializer
         }
     }
 
-    protected function processDocument()
+    protected function processDocument(): IDMEFMessage
     {
         $rng = dirname(dirname(__DIR__)) .
                 DIRECTORY_SEPARATOR . 'data' .
@@ -488,10 +490,10 @@ class Xml extends AbstractSerializer
         }
     }
 
-    protected function iterateData()
+    protected function iterateData(): IDMEFMessage
     {
         $value = null;
-        $xmlStack = array(new \fpoirotte\IDMEF\Classes\IDMEFMessage());
+        $xmlStack = array(new IDMEFMessage());
         $successfulRead = $this->in->read();
         while ($successfulRead !== false) {
             switch ($this->in->nodeType) {
