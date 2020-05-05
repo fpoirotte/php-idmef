@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace fpoirotte\IDMEF\Classes;
 
-use \fpoirotte\IDMEF\Types\Enums\DecoyEnum;
-use \fpoirotte\IDMEF\Types\StringType;
+use fpoirotte\IDMEF\Types\Enums\DecoyEnum;
+use fpoirotte\IDMEF\Types\StringType;
 
 class Target extends AbstractClass
 {

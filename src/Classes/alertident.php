@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace fpoirotte\IDMEF\Classes;
 
-use \fpoirotte\IDMEF\Types\StringType;
+use fpoirotte\IDMEF\Types\StringType;
 
 // phpcs:ignore Squiz.Classes.ValidClassName.NotCamelCaps
 class alertident extends AbstractClass

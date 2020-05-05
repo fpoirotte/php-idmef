@@ -3,14 +3,14 @@ declare(strict_types=1);
 
 namespace fpoirotte\IDMEF\Classes;
 
-use \fpoirotte\IDMEF\Types\Enums\AdditionalDataTypeEnum;
-use \fpoirotte\IDMEF\Types\AbstractType;
-use \fpoirotte\IDMEF\Types\StringType;
-use \fpoirotte\IDMEF\Types\BooleanType;
-use \fpoirotte\IDMEF\Types\IntegerType;
-use \fpoirotte\IDMEF\Types\RealType;
-use \fpoirotte\IDMEF\Types\DateTimeType;
-use \fpoirotte\IDMEF\Types\XmlType;
+use fpoirotte\IDMEF\Types\Enums\AdditionalDataTypeEnum;
+use fpoirotte\IDMEF\Types\AbstractType;
+use fpoirotte\IDMEF\Types\StringType;
+use fpoirotte\IDMEF\Types\BooleanType;
+use fpoirotte\IDMEF\Types\IntegerType;
+use fpoirotte\IDMEF\Types\RealType;
+use fpoirotte\IDMEF\Types\DateTimeType;
+use fpoirotte\IDMEF\Types\XmlType;
 
 class AdditionalData extends AbstractClass
 {

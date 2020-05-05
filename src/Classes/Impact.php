@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace fpoirotte\IDMEF\Classes;
 
-use \fpoirotte\IDMEF\Types\Enums\SeverityEnum;
-use \fpoirotte\IDMEF\Types\Enums\CompletionEnum;
-use \fpoirotte\IDMEF\Types\Enums\ImpactTypeEnum;
+use fpoirotte\IDMEF\Types\Enums\SeverityEnum;
+use fpoirotte\IDMEF\Types\Enums\CompletionEnum;
+use fpoirotte\IDMEF\Types\Enums\ImpactTypeEnum;
 
 class Impact extends AbstractClass
 {

@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace fpoirotte\IDMEF\Classes;
 
-use \fpoirotte\IDMEF\Types\AbstractType;
-use \fpoirotte\IDMEF\LockException;
+use fpoirotte\IDMEF\Types\AbstractType;
+use fpoirotte\IDMEF\LockException;
 
 /**
  * Abstract class representing a node in the IDMEF tree.

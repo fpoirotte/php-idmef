@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace fpoirotte\IDMEF\Types\Enums;
 
-use \fpoirotte\IDMEF\Types\AbstractEnum;
+use fpoirotte\IDMEF\Types\AbstractEnum;
 
 class LinkageCategoryEnum extends AbstractEnum
 {

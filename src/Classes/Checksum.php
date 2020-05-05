@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace fpoirotte\IDMEF\Classes;
 
-use \fpoirotte\IDMEF\Types\Enums\AlgorithmEnum;
-use \fpoirotte\IDMEF\Types\StringType;
+use fpoirotte\IDMEF\Types\Enums\AlgorithmEnum;
+use fpoirotte\IDMEF\Types\StringType;
 
 class Checksum extends AbstractClass
 {

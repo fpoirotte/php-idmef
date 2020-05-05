@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace fpoirotte\IDMEF\Classes;
 
-use \fpoirotte\IDMEF\Types\Enums\UserCategoryEnum;
-use \fpoirotte\IDMEF\Types\StringType;
+use fpoirotte\IDMEF\Types\Enums\UserCategoryEnum;
+use fpoirotte\IDMEF\Types\StringType;
 
 class User extends AbstractClass
 {

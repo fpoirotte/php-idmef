@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace fpoirotte\IDMEF\Serializers;
 
-use \fpoirotte\IDMEF\Classes\IDMEFMessage;
+use fpoirotte\IDMEF\Classes\IDMEFMessage;
 
 /**
  * Abstract class representing a serializer for IDMEF messages.

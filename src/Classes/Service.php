@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace fpoirotte\IDMEF\Classes;
 
-use \fpoirotte\IDMEF\Types\StringType;
-use \fpoirotte\IDMEF\Types\IntegerType;
-use \fpoirotte\IDMEF\Types\PortlistType;
+use fpoirotte\IDMEF\Types\StringType;
+use fpoirotte\IDMEF\Types\IntegerType;
+use fpoirotte\IDMEF\Types\PortlistType;
 
 class Service extends AbstractClass
 {

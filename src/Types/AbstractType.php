@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace fpoirotte\IDMEF\Types;
 
-use \fpoirotte\IDMEF\Classes\AbstractNode;
+use fpoirotte\IDMEF\Classes\AbstractNode;
 
 /**
  * Abstract class representing an IDMEF type.

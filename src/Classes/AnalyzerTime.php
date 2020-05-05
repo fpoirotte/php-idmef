@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace fpoirotte\IDMEF\Classes;
 
-use \fpoirotte\IDMEF\Types\NtpstampType;
+use fpoirotte\IDMEF\Types\NtpstampType;
 
 class AnalyzerTime extends AbstractClass
 {

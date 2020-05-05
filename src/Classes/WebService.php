@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace fpoirotte\IDMEF\Classes;
 
-use \fpoirotte\IDMEF\Types\StringType;
+use fpoirotte\IDMEF\Types\StringType;
 
 class WebService extends AbstractClass
 {

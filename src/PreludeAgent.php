@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace fpoirotte\IDMEF;
 
-use \fpoirotte\IDMEF\Types\AbstractType;
-use \fpoirotte\IDMEF\Classes\AbstractIDMEFMessage;
+use fpoirotte\IDMEF\Types\AbstractType;
+use fpoirotte\IDMEF\Classes\AbstractIDMEFMessage;
 
 /**
  * Implements a basic Prelude SIEM agent.

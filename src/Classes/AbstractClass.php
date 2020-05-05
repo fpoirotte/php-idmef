@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace fpoirotte\IDMEF\Classes;
 
-use \fpoirotte\IDMEF\LockException;
+use fpoirotte\IDMEF\LockException;
 
 /**
  * Abstract class representing an IDMEF class.

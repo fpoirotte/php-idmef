@@ -3,13 +3,13 @@ declare(strict_types=1);
 
 namespace fpoirotte\IDMEF\Serializers;
 
-use \fpoirotte\IDMEF\Types\AbstractType;
-use \fpoirotte\IDMEF\Types\DateTimeType;
-use \fpoirotte\IDMEF\Classes\IDMEFMessage;
-use \fpoirotte\IDMEF\Classes\AbstractClass;
-use \fpoirotte\IDMEF\Classes\AbstractList;
-use \fpoirotte\IDMEF\Classes\AbstractNode;
-use \fpoirotte\IDMEF\Classes\AdditionalData;
+use fpoirotte\IDMEF\Types\AbstractType;
+use fpoirotte\IDMEF\Types\DateTimeType;
+use fpoirotte\IDMEF\Classes\IDMEFMessage;
+use fpoirotte\IDMEF\Classes\AbstractClass;
+use fpoirotte\IDMEF\Classes\AbstractList;
+use fpoirotte\IDMEF\Classes\AbstractNode;
+use fpoirotte\IDMEF\Classes\AdditionalData;
 
 /**
  * Abstract class representing an IDMEF type.

@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace fpoirotte\IDMEF\Classes;
 
-use \fpoirotte\IDMEF\Types\Enums\AddressCategoryEnum;
-use \fpoirotte\IDMEF\Types\StringType;
-use \fpoirotte\IDMEF\Types\IntegerType;
+use fpoirotte\IDMEF\Types\Enums\AddressCategoryEnum;
+use fpoirotte\IDMEF\Types\StringType;
+use fpoirotte\IDMEF\Types\IntegerType;
 
 class Address extends AbstractClass
 {
