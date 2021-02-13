@@ -2,7 +2,7 @@
     "prefer-stable": true,
     "name": "fpoirotte/idmef",
     "description": "IDMEF library for PHP",
-    "keywords": ["security", "IDMEF", "intrustion", "detection", "Prelude", "SIEM"],
+    "keywords": ["security", "IDMEF", "intrusion", "detection", "Prelude", "SIEM"],
     "homepage": "https://github.com/fpoirotte/php-idmef",
     "license": "MIT",
     "authors": [
@@ -39,7 +39,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-develop": "1.0.x-dev"
+            "dev-develop": "1.1.x-dev"
         }
     }
 }
