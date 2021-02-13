@@ -24,7 +24,7 @@ class DateTimeType extends AbstractType
         return $this->_value->format(static::FORMAT);
     }
 
-    public function unserialize($serialized)
+    protected function unserialize(string $serialized): void
     {
         $formats = array(
             'Y-m-d\\TH:i:s.uP',

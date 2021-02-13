@@ -12,7 +12,7 @@ class ByteStringType extends StringType
         return base64_encode(parent::__toString());
     }
 
-    public function unserialize($serialized)
+    protected function unserialize(string $serialized): void
     {
         $value = base64_decode($serialized, true);
         if ($value === false) {

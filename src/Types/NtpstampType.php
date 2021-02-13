@@ -40,7 +40,7 @@ class NtpstampType extends AbstractType
         return $this->_ntpstamp;
     }
 
-    public function unserialize($serialized)
+    protected function unserialize(string $serialized): void
     {
         $parts = explode('.', $serialized, 2);
         foreach ($parts as &$part) {

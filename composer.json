@@ -18,7 +18,7 @@
         "source": "https://github.com/fpoirotte/php-idmef"
     },
     "require": {
-        "php": ">=7.1",
+        "php": ">=7.4",
         "ext-filter": "*",
         "ext-dom": "*"
     },
@@ -28,13 +28,14 @@
         "ext-ffi": "Provides support for sending IDMEF alerts to Prelude SIEM"
     },
     "require-dev": {
-        "phpunit/phpunit": ">=7.0",
+        "phpunit/phpunit": ">=9.2",
         "squizlabs/php_codesniffer": "*"
     },
     "autoload": {
         "psr-4": {
             "fpoirotte\\IDMEF\\": "src/"
-        }
+        },
+        "files": ["src/functions.php"]
     },
     "extra": {
         "branch-alias": {

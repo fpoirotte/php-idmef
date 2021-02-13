@@ -5,10 +5,11 @@ namespace fpoirotte\IDMEF\Types;
 
 use fpoirotte\IDMEF\Classes\AbstractNode;
 
+
 /**
  * Abstract class representing an IDMEF type.
  */
-abstract class AbstractType extends AbstractNode implements \Serializable
+abstract class AbstractType extends AbstractNode
 {
     protected $_value;
     const XML_TYPE = null;
@@ -32,8 +33,18 @@ abstract class AbstractType extends AbstractNode implements \Serializable
         return $this->_parent->getPath($this) . '.' . $this->_parent->__get($this);
     }
 
-    public function serialize()
+    final public function __unserialize(array $data): void
     {
-        return (string) $this;
+        if (!isset($data['value'])) {
+            throw RuntimeException();
+        }
+        $this->unserialize($data['value']);
+    }
+
+    abstract protected function unserialize(string $serialized): void;
+
+    final public function __serialize(): array
+    {
+        return ['value' => (string) $this];
     }
 }

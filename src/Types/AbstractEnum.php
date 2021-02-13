@@ -15,7 +15,7 @@ abstract class AbstractEnum extends AbstractType
         $this->unserialize($value);
     }
 
-    public function unserialize($serialized)
+    protected function unserialize(string $serialized): void
     {
         if (!in_array($serialized, $this->_choices, true)) {
             throw new \InvalidArgumentException($serialized);

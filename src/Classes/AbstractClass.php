@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace fpoirotte\IDMEF\Classes;
 
 use fpoirotte\IDMEF\LockException;
+use function fpoirotte\IDMEF\unserialize_type;
 
 /**
  * Abstract class representing an IDMEF class.
@@ -86,8 +87,7 @@ abstract class AbstractClass extends AbstractNode
                 // If the raw value fails and it is a string,
                 // we try to use unserialization instead.
                 if (is_string($value)) {
-                    $value  = sprintf('C:%d:"%s":%d:{%s}', strlen($type), $type, strlen($value), $value);
-                    $value  = unserialize($value);
+                    $value = unserialize_type($type, $value);
                 } else {
                     throw $e;
                 }

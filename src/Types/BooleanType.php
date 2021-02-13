@@ -20,7 +20,7 @@ class BooleanType extends AbstractType
         return $this->_value ? 'true' : 'false';
     }
 
-    public function unserialize($serialized)
+    protected function unserialize(string $serialized): void
     {
         $possible = array('false', 'true');
         $pos = array_search($serialized, $possible, true);

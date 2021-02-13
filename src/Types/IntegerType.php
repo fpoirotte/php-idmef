@@ -15,7 +15,7 @@ class IntegerType extends AbstractType
         $this->_value = $value;
     }
 
-    public function unserialize($serialized)
+    protected function unserialize(string $serialized): void
     {
         $serialized = strtolower($serialized);
 

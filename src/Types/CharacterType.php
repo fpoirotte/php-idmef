@@ -15,7 +15,7 @@ class CharacterType extends AbstractType
         $this->_value = $value;
     }
 
-    public function unserialize($serialized)
+    protected function unserialize(string $serialized): void
     {
         if (strlen($serialized) !== 1) {
             throw new \InvalidArgumentException($serialized);

@@ -8,3 +8,4 @@
 /build
 /*.tagfile.xml
 /*.svg
+/.phpunit.result.cache

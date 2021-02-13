@@ -15,7 +15,7 @@ class PortlistType extends AbstractType
         $this->unserialize($value);
     }
 
-    public function unserialize($serialized)
+    protected function unserialize(string $serialized): void
     {
         foreach (explode(',', $serialized) as $ports) {
             foreach (explode('-', $ports, 2) as $port) {

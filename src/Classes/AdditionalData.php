@@ -11,6 +11,7 @@ use fpoirotte\IDMEF\Types\IntegerType;
 use fpoirotte\IDMEF\Types\RealType;
 use fpoirotte\IDMEF\Types\DateTimeType;
 use fpoirotte\IDMEF\Types\XmlType;
+use function fpoirotte\IDMEF\unserialize_type;
 
 class AdditionalData extends AbstractClass
 {
@@ -61,8 +62,7 @@ class AdditionalData extends AbstractClass
                 if ($type !== null) {
                     $cls = str_replace(' ', '', ucwords(str_replace('-', ' ', $type->getValue())));
                     $cls = "\\fpoirotte\\IDMEF\\Types\\${cls}Type";
-                    $value  = sprintf('C:%d:"%s":%d:{%s}', strlen($cls), $cls, strlen($value), $value);
-                    $value  = unserialize($value);
+                    $value = unserialize_type($cls, $value);
                 } else {
                     $value = new StringType($value);
                 }

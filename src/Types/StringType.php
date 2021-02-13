@@ -15,7 +15,7 @@ class StringType extends AbstractType
         $this->unserialize($value);
     }
 
-    public function unserialize($serialized)
+    protected function unserialize(string $serialized): void
     {
         $this->_value = $serialized;
     }

@@ -4,12 +4,12 @@ PHP-IDMEF
 Introduction
 ============
 
-This repository contains a PHP library to deal with messages using the
+This repository contains a PHP library implementing the
 Intrusion Detection Message Exchange Format (IDMEF) defined in
 `RFC 4765 <https://tools.ietf.org/html/rfc4765>`_.
 
-It supports all the classes and attributes of the RFC, provides support
-for XML serialization/unserialization and also includes code to send alerts
+It supports all the classes and attributes defined in the RFC, supports
+XML serialization/unserialization and also includes code to send alerts
 generated using IDMEF to `Prelude SIEM <https://www.prelude-siem.org/>`_.
 
 
@@ -19,7 +19,7 @@ Prerequisites
 For basic usage, you only need the following dependencies:
 
 - The `Composer <https://getcomposer.org/>`_ dependency manager
-- PHP >= 7.1
+- PHP >= 7.4
 - the PHP ``DOM`` extension
 - the PHP ``Filter`` extension
 
@@ -31,7 +31,6 @@ To use XML serialization/unserialization, you will also need:
 
 To send alerts to Prelude SIEM, you will need:
 
-- PHP >= 7.4
 - the PHP ``FFI`` extension
 
 
@@ -110,7 +109,7 @@ To make working with chained analyzers easier, Prelude SIEM represents
 them as a list (``alert.analyzer(0)``, ``alert.analyzer(1)``, ...).
 To be as close to the IDMEF RFC as possible, this library uses the recursive
 approach to represent chained analyzers. However, some of the API may also
-implement Prelude SIEM's notation for them, so you mileage may vary.
+implement Prelude SIEM's notation for them, so your mileage may vary.
 
 
 Data types
@@ -324,7 +323,7 @@ On the machine where ``prelude-manager`` resides, run this:
     sudo prelude-admin registration-server prelude-manager
 
 
-In parallel, on the machine where the library will be running, run this:
+In parallel, on the machine where the library will be used, run this:
 
 ..  sourcecode:: bash
 
@@ -364,7 +363,7 @@ to Prelude SIEM using the following code:
     at a regular interval (defined in the agent's profile).
     It is therefore not necessary to send them manually.
 
-    Likewise, the agent will automatically be (properly) shut down when it
+    Likewise, the agent will automatically be shut down (cleanly) when it
     becomes unused, as part of PHP's garbage collection process.
     You may also force a shutdown manually by using the following code snippet:
 

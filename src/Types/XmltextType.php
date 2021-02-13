@@ -38,7 +38,7 @@ class XmltextType extends AbstractType
         $this->_value = $value->saveXML($value);
     }
 
-    public function unserialize($serialized)
+    protected function unserialize(string $serialized): void
     {
         $options =  LIBXML_NONET | LIBXML_PARSEHUGE | LIBXML_HTML_NOIMPLIED |
                     LIBXML_HTML_NODEFDTD | LIBXML_NOXMLDECL;

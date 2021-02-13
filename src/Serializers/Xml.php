@@ -10,6 +10,7 @@ use fpoirotte\IDMEF\Classes\AbstractClass;
 use fpoirotte\IDMEF\Classes\AbstractList;
 use fpoirotte\IDMEF\Classes\AbstractNode;
 use fpoirotte\IDMEF\Classes\AdditionalData;
+use function fpoirotte\IDMEF\unserialize_type;
 
 /**
  * Abstract class representing an IDMEF type.
@@ -579,8 +580,7 @@ class Xml extends AbstractSerializer
                             if (in_array($this->in->localName, $adtypes, true)) {
                                 $attr   = str_replace(' ', '', ucwords(str_replace('-', ' ', $this->in->localName)));
                                 $cls    = "fpoirotte\\IDMEF\\Types\\${attr}Type";
-                                $value  = sprintf('C:%d:"%s":%d:{%s}', strlen($cls), $cls, strlen($value), $value);
-                                $value  = unserialize($value);
+                                $value  = unserialize_type($cls, $value);
 
                                 if ($current instanceof AdditionalData) {
                                     $attr   = 'data';

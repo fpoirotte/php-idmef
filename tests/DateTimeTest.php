@@ -1,7 +1,8 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use \fpoirotte\IDMEF\Types\DateTimeType;
+use fpoirotte\IDMEF\Types\DateTimeType;
+use function fpoirotte\IDMEF\unserialize_type;
 
 class DateTimeTest extends TestCase
 {
@@ -37,9 +38,7 @@ class DateTimeTest extends TestCase
      */
     public function testIntegralDateTimeParsing($value)
     {
-        $cls        = DateTimeType::class;
-        $serialized = sprintf('C:%d:"%s":%d:{%s}', strlen($cls), $cls, strlen($value), $value);
-        $datetime   = unserialize($serialized);
+        $datetime   = unserialize_type(DateTimeType::class, $value);
         $utcTime    = $datetime->getValue()->setTimezone(new \DateTimeZone('UTC'));
         $this->assertSame('2018-08-25T14:01:19.000000+00:00', $utcTime->format(DateTimeType::FORMAT));
     }
@@ -49,9 +48,7 @@ class DateTimeTest extends TestCase
      */
     public function testFractionalDateTimeParsing($value)
     {
-        $cls        = DateTimeType::class;
-        $serialized = sprintf('C:%d:"%s":%d:{%s}', strlen($cls), $cls, strlen($value), $value);
-        $datetime   = unserialize($serialized);
+        $datetime   = unserialize_type(DateTimeType::class, $value);
         $utcTime    = $datetime->getValue()->setTimezone(new \DateTimeZone('UTC'));
         $this->assertSame('2018-08-25T14:01:19.123400+00:00', $utcTime->format(DateTimeType::FORMAT));
     }
