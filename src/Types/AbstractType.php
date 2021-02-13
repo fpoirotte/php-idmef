@@ -5,7 +5,6 @@ namespace fpoirotte\IDMEF\Types;
 
 use fpoirotte\IDMEF\Classes\AbstractNode;
 
-
 /**
  * Abstract class representing an IDMEF type.
  */
